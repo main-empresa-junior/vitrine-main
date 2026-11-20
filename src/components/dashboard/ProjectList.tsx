@@ -15,6 +15,7 @@ import {
 import type { ShowcaseProject } from '@/features/projects/model';
 import { normalizeForSearch } from '@/lib/utils/text';
 
+import { EmptyProjectList } from './EmptyProjectList';
 import { ProjectRow } from './ProjectRow';
 
 type ProjectListProps = {
@@ -50,6 +51,8 @@ export function ProjectList({ projects }: ProjectListProps) {
     run(() => deleteProject(id), `${name} foi excluído.`);
   }
 
+  if (projects.length === 0) return <EmptyProjectList />;
+
   return (
     <div className="flex flex-col gap-5">
       <div className="max-w-sm">
@@ -63,9 +66,7 @@ export function ProjectList({ projects }: ProjectListProps) {
         />
       </div>
       {visible.length === 0 ? (
-        <p className="text-muted">
-          {isFiltering ? 'Nenhum projeto com esse nome.' : 'Nenhum projeto cadastrado ainda.'}
-        </p>
+        <p className="text-muted">Nenhum projeto com esse nome.</p>
       ) : (
         <ol className="flex flex-col gap-3" aria-label="Projetos na ordem da vitrine">
           {visible.map((project, index) => (
