@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AdditiveBlending, BackSide, Color } from 'three';
 
-const ATMOSPHERE_SCALE = 1.15;
+import { ATMOSPHERE_SCALE } from '@/lib/planet-framing';
 
 const VERTEX_SHADER = `
 varying vec3 vNormal;

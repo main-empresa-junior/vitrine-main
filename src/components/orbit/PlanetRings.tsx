@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Color, DoubleSide } from 'three';
 
+import { RING_OUTER_SCALE } from '@/lib/planet-framing';
 import type { PlanetPalette } from '@/lib/textures';
 
 const RING_BANDS = [
@@ -8,7 +9,7 @@ const RING_BANDS = [
   { inner: 1.6, outer: 1.86, opacity: 0.42 },
   { inner: 1.9, outer: 2.02, opacity: 0.16 },
   { inner: 2.06, outer: 2.3, opacity: 0.28 },
-  { inner: 2.34, outer: 2.42, opacity: 0.12 },
+  { inner: 2.34, outer: RING_OUTER_SCALE, opacity: 0.12 },
 ] as const;
 
 type PlanetRingsProps = {

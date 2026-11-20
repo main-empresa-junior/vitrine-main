@@ -8,10 +8,10 @@ import { useSupportsWebGL } from '@/hooks/useSupportsWebGL';
 import { cn } from '@/lib/utils/cn';
 import { MAX_PIXEL_RATIO } from '@/lib/webgl';
 
+import { FitPlanetCamera, PLANET_FOV } from './FitPlanetCamera';
 import { Planet, type PlanetProps } from './Planet';
 import { PlanetThumbnail } from './PlanetThumbnail';
 
-const CAMERA_DISTANCE_PER_RADIUS = 4.2;
 const FALLBACK_SIZE = 320;
 
 type PlanetCanvasProps = Omit<PlanetProps, 'radius'> & {
@@ -22,7 +22,6 @@ export function PlanetCanvas({ className, ...planet }: PlanetCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsVisible(containerRef, '100px');
   const hasWebGL = useSupportsWebGL();
-  const cameraDistance = CAMERA_DISTANCE_PER_RADIUS * (planet.hasRing ? 1.35 : 1);
 
   return (
     <div ref={containerRef} aria-hidden="true" className={cn('relative', className)}>
@@ -30,11 +29,12 @@ export function PlanetCanvas({ className, ...planet }: PlanetCanvasProps) {
         <Canvas
           dpr={[1, MAX_PIXEL_RATIO]}
           frameloop={isVisible ? 'always' : 'never'}
-          camera={{ position: [0, 0.6, cameraDistance], fov: 40 }}
+          camera={{ position: [0, 0, 10], fov: PLANET_FOV }}
           gl={{ antialias: true, alpha: true }}
         >
           <ambientLight intensity={0.35} color="#2A3060" />
           <directionalLight position={[-5, 2, 4]} intensity={2.6} color="#FFF1DC" />
+          <FitPlanetCamera hasRing={planet.hasRing} />
           <Planet {...planet} radius={1} />
         </Canvas>
       ) : (
