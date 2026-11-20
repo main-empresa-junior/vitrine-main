@@ -4,6 +4,7 @@ import { Figtree, Unbounded } from 'next/font/google';
 import Script from 'next/script';
 
 import { PREFERENCES_SCRIPT } from '@/lib/preferences';
+import { SITE_URL } from '@/lib/site';
 
 import './globals.css';
 
@@ -20,6 +21,7 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: { default: 'Main | Projetos em órbita', template: '%s | Main' },
   description:
     'Vitrine dos projetos da Main, empresa júnior de Ciência da Computação e Engenharia de Software da UEM.',
