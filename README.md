@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# vitrine-main
 
-## Getting Started
+The public showcase of **Main**, the junior enterprise of Computer Science and Software Engineering
+at UEM (Universidade Estadual de Maringá). Visitors travel through a 3D planetary system where every
+planet is a project built by Main. Team members sign in to a dashboard to create and edit projects,
+including the color palette that paints each planet and its project page.
 
-First, run the development server:
+Built with Next.js 16 (App Router, Cache Components), React 19, TypeScript, Tailwind CSS 4,
+React Three Fiber and Supabase. Project rules live in [`CLAUDE.md`](./CLAUDE.md); a short version
+for humans is in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Running locally
+
+Requirements: Node.js 22 and npm.
+
+```sh
+npm install
+cp .env.example .env.local   # then fill in the values below
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Useful scripts:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Script              | What it does                                                 |
+| ------------------- | ------------------------------------------------------------ |
+| `npm run dev`       | Development server                                           |
+| `npm run build`     | Production build                                             |
+| `npm run lint`      | ESLint with zero warnings allowed                            |
+| `npm run format`    | Prettier on the whole project                                |
+| `npm run typecheck` | Route types + TypeScript                                     |
+| `npm run test`      | Vitest for the pure logic (orbits, textures, slugs, ...)     |
+| `npm run db:types`  | Regenerates `src/types/database.ts` from the linked Supabase |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+| Name                                   | Description                                                   |
+| -------------------------------------- | ------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Supabase project URL                                          |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key                               |
+| `NEXT_PUBLIC_CONTACT_EMAIL`            | Main contact email, used by Orbi's question button and footer |
+| `NEXT_PUBLIC_SITE_URL`                 | Public URL of the site, used for metadata, sitemap and robots |
 
-To learn more about Next.js, take a look at the following resources:
+## Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Every change is a SQL file in `supabase/migrations/`. Row Level Security is enabled on every table:
+visitors read only published projects; signed-in team members can do everything.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sh
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase db push --remote   # applies the migrations
+npm run db:types                # regenerates the TypeScript types
+```
 
-## Deploy on Vercel
+## Creating the first account
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Public sign-up is disabled. In the Supabase dashboard, open **Authentication → Users → Add user**,
+create the user with email and password, and keep **Authentication → Sign In / Providers → Allow new
+users to sign up** turned off. The person can then sign in at `/dashboard/login`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Folder structure
+
+```
+src/
+├── app/
+│   ├── (site)/              public showcase (dark theme): orbit journey and project pages
+│   └── dashboard/           team area (light theme): login, project list, create and edit
+├── components/
+│   ├── ui/                  reusable building blocks (Button, TextField, Dialog, ...)
+│   ├── orbit/               3D scene and the showcase interface
+│   ├── project/             project page sections
+│   ├── dashboard/           dashboard components (ProjectEditor, PaletteSection, ...)
+│   ├── mascot/              Orbi, the Main mascot
+│   └── site/                header, footer and shared screens
+├── features/                domain logic: queries, server actions, schemas
+├── hooks/                   reusable hooks
+├── lib/                     pure logic (orbits, textures, colors) and Supabase clients
+└── types/                   generated database types
+supabase/migrations/         SQL migrations
+docs/                        prototype, plan and progress log
+```
+
+## Deploying to Vercel
+
+1. Import the GitHub repository in Vercel (framework preset: Next.js).
+2. Add the four environment variables above to the Production and Preview environments.
+3. In Supabase, open **Authentication → URL Configuration** and set the Site URL to the Vercel
+   domain.
+4. Deploy. Public pages are cached and revalidated automatically whenever a project is saved in the
+   dashboard.
+
+The GitHub Actions workflow in `.github/workflows/ci.yml` needs the repository secrets
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` to run the build.
