@@ -8,6 +8,7 @@ type Veil = {
   startedAt: number;
   target: VeilTarget;
   switchedAt: number | null;
+  arrivedOrbit: number | null;
 };
 
 // No modo reduzido a câmera fica parada em cada parada e troca de lugar com a cena escurecida.
@@ -54,7 +55,7 @@ export function advanceReducedJourney(
   lastStop: number,
   now: number,
 ): ReducedFrame {
-  const { fadeMs, holdMs } = REDUCED_MOTION;
+  const { fadeMs } = REDUCED_MOTION;
   const frame: ReducedFrame = { veilOpacity: 0, changedStop: null, arrivedOrbit: null };
 
   if (!journey.veil) {
@@ -65,7 +66,7 @@ export function advanceReducedJourney(
       return frame;
     }
     if (target.kind === 'stop' && target.stop === journey.shownStop) return frame;
-    journey.veil = { startedAt: now, target, switchedAt: null };
+    journey.veil = { startedAt: now, target, switchedAt: null, arrivedOrbit: null };
   }
 
   const veil = journey.veil;
@@ -76,12 +77,18 @@ export function advanceReducedJourney(
       return frame;
     }
     veil.switchedAt = now;
-    frame.arrivedOrbit = switchTo(journey, veil.target, state);
+    veil.arrivedOrbit = switchTo(journey, veil.target, state);
     frame.changedStop = journey.shownStop;
   }
 
+  const holdMs =
+    veil.target.kind === 'travel' ? REDUCED_MOTION.travelHoldMs : REDUCED_MOTION.holdMs;
   const sinceSwitch = now - veil.switchedAt;
   frame.veilOpacity = sinceSwitch < holdMs ? 1 : Math.max(0, 1 - (sinceSwitch - holdMs) / fadeMs);
-  if (frame.veilOpacity === 0) journey.veil = null;
+  if (frame.veilOpacity === 0) {
+    // A interface só sabe da chegada quando a cena já clareou: o aviso da viagem fica até lá.
+    frame.arrivedOrbit = veil.arrivedOrbit;
+    journey.veil = null;
+  }
   return frame;
 }

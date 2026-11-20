@@ -14,6 +14,8 @@ export const MOTION = {
 export const REDUCED_MOTION = {
   fadeMs: 200,
   holdMs: 120,
+  // Troca de órbita: o escuro dura mais, para dar tempo de ler "Chegando à órbita N".
+  travelHoldMs: 500,
 } as const;
 
 // Tempos do chat com o Orbi, em milissegundos.

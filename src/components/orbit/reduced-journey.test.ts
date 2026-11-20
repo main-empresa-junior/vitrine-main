@@ -58,10 +58,21 @@ describe('advanceReducedJourney', () => {
     state.travel = { from: 0, to: 1 };
 
     advanceReducedJourney(journey, state, LAST_STOP, 500);
-    const dark = advanceReducedJourney(journey, state, LAST_STOP, 500 + REDUCED_MOTION.fadeMs);
-    expect(dark.arrivedOrbit).toBe(1);
+    const switchedAt = 500 + REDUCED_MOTION.fadeMs;
+    const dark = advanceReducedJourney(journey, state, LAST_STOP, switchedAt);
+    expect(dark.veilOpacity).toBe(1);
+    expect(dark.arrivedOrbit).toBeNull();
     expect(state).toMatchObject({ travel: null, orbitIndex: 1, progressTarget: 0 });
     expect(journey.shownStop).toBe(0);
+
+    const clear = advanceReducedJourney(
+      journey,
+      state,
+      LAST_STOP,
+      switchedAt + REDUCED_MOTION.travelHoldMs + REDUCED_MOTION.fadeMs,
+    );
+    expect(clear.veilOpacity).toBe(0);
+    expect(clear.arrivedOrbit).toBe(1);
   });
 
   it('stays fully dark on the switch frame even when frames are slow', () => {

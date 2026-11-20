@@ -29,7 +29,8 @@ function describeFocus(page: Page): Promise<FocusReport> {
       fieldLabel?.textContent?.trim() ??
       element.textContent?.trim().slice(0, 40) ??
       '';
-    return { label: `${element.tagName} ${label}`, isOnBody: false, isObscured };
+    const cover = isObscured && hit ? ` (coberto por ${hit.tagName}.${hit.className})` : '';
+    return { label: `${element.tagName} ${label}${cover}`, isOnBody: false, isObscured };
   });
 }
 
