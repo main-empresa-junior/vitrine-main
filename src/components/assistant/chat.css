@@ -1,0 +1,55 @@
+/* No celular o chat é uma folha de baixo, na largura toda e acima da área segura. */
+.orbi-chat {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  max-height: 85dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+  transform-origin: bottom right;
+  animation: orbi-chat-open 200ms var(--ease-out-soft);
+}
+
+/* No computador fica ancorado acima do Orbi, à direita. */
+@media (min-width: 40rem) {
+  .orbi-chat {
+    inset-inline: auto 2rem;
+    bottom: 15rem;
+    width: 22.5rem;
+    max-height: min(70dvh, calc(100dvh - 17rem));
+    padding-bottom: 0;
+  }
+}
+
+.orbi-chat-dot {
+  animation: orbi-chat-dot 1s ease-in-out infinite;
+}
+.orbi-chat-dot:nth-child(2) {
+  animation-delay: 150ms;
+}
+.orbi-chat-dot:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+[data-motion='reduced'] .orbi-chat,
+[data-motion='reduced'] .orbi-chat-dot {
+  animation: none;
+}
+
+@keyframes orbi-chat-open {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.96);
+  }
+}
+
+@keyframes orbi-chat-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}

@@ -11,14 +11,18 @@ const PANEL = '#0A0F33';
 
 const SPYGLASS = '#C9D2EE';
 
-export type OrbiPose = 'default' | 'spyglass' | 'sign';
+export type OrbiPose = 'default' | 'spyglass' | 'sign' | 'wink';
+
+const FULL_VIEW_BOX = '0 0 104 132';
+const HEAD_VIEW_BOX = '14 0 76 76';
 
 type OrbiFigureProps = {
   pose?: OrbiPose;
+  framing?: 'full' | 'head';
 };
 
 // Astronauta com capacete em hexágono, como o logo da Main.
-export function OrbiFigure({ pose = 'default' }: OrbiFigureProps) {
+export function OrbiFigure({ pose = 'default', framing = 'full' }: OrbiFigureProps) {
   const id = useId();
   const rim = `${id}-rim`;
   const visor = `${id}-visor`;
@@ -26,7 +30,7 @@ export function OrbiFigure({ pose = 'default' }: OrbiFigureProps) {
 
   return (
     <svg
-      viewBox="0 0 104 132"
+      viewBox={framing === 'head' ? HEAD_VIEW_BOX : FULL_VIEW_BOX}
       focusable="false"
       aria-hidden="true"
       className="block h-auto w-full overflow-visible"
@@ -86,7 +90,17 @@ export function OrbiFigure({ pose = 'default' }: OrbiFigureProps) {
       <polygon points="52,14 75,27 75,51 52,64 29,51 29,27" fill={`url(#${visor})`} />
       <g className="orbi-eyes">
         <ellipse cx="43" cy="40" rx="4" ry="5.5" fill={brandColors.glow} />
-        <ellipse cx="61" cy="40" rx="4" ry="5.5" fill={brandColors.glow} />
+        {pose === 'wink' ? (
+          <path
+            d="M56 41 Q61 35 66 41"
+            stroke={brandColors.glow}
+            strokeWidth="3"
+            fill="none"
+            strokeLinecap="round"
+          />
+        ) : (
+          <ellipse cx="61" cy="40" rx="4" ry="5.5" fill={brandColors.glow} />
+        )}
       </g>
       <path
         d="M45 52 Q52 57 59 52"

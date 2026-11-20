@@ -7,7 +7,7 @@ type SectionTitleProps = {
 
 export function SectionTitle({ id, children }: SectionTitleProps) {
   return (
-    <h2 id={id} className="font-display text-title">
+    <h2 id={id} tabIndex={-1} className="font-display text-title">
       {children}
     </h2>
   );

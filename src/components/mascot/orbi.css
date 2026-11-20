@@ -126,6 +126,24 @@
   transform: rotate(-150deg);
 }
 
+/* Conversando no chat: inclinado para o painel, olhando para cima e para a esquerda */
+.orbi.talking {
+  transform: rotate(-5deg);
+  transition: transform 0.3s;
+}
+.orbi.talking .orbi-eyes {
+  animation: none;
+  transform: translate(-2px, -2px);
+}
+.orbi.talking .orbi-arm-left {
+  transform: rotate(35deg);
+}
+
+/* Quando a resposta chega: aponta para o painel */
+.orbi.talking.pointing .orbi-arm-right {
+  animation: orbi-point 0.9s ease-in-out;
+}
+
 [data-motion='reduced'] .orbi,
 [data-motion='reduced'] .orbi *,
 [data-motion='reduced'] .orbi-help {
@@ -364,5 +382,15 @@
   }
   50% {
     transform: translateY(-4px);
+  }
+}
+@keyframes orbi-point {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  30%,
+  70% {
+    transform: rotate(-160deg);
   }
 }
