@@ -7,6 +7,7 @@ import type { ShowcaseProject } from '@/features/projects/model';
 import { useIsVisible } from '@/hooks/useIsVisible';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useSupportsWebGL } from '@/hooks/useSupportsWebGL';
+import { fadeClasses } from '@/lib/motion';
 import { splitIntoOrbits } from '@/lib/orbits';
 import { cn } from '@/lib/utils/cn';
 
@@ -26,7 +27,8 @@ const VIEWPORTS_PER_STOP = 100;
 const EXTRA_VIEWPORTS = 160;
 const INTRO_FADE_SPEED = 2.5;
 const INTRO_LIFT_PX = 60;
-const SCENE_VISIBLE_MARGIN = '-60% 0px 0px 0px';
+// A órbita fica ativa enquanto o fim da seção estiver abaixo de 60% da tela.
+const ORBIT_ACTIVE_MARGIN = '-60% 0px 0px 0px';
 
 type OrbitExperienceProps = {
   projects: readonly ShowcaseProject[];
@@ -40,8 +42,8 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   const journeyRef = useRef<JourneyState>({ orbitIndex: 0, progressTarget: 0, travel: null });
   const sectionRef = useRef<HTMLElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
-  // A cena some quando o fim da seção sobe acima de 60% da tela, antes de "Todos os projetos" chegar.
-  const isVisible = useIsVisible(sectionRef, SCENE_VISIBLE_MARGIN);
+  // Única fonte de verdade: a cena e toda a interface da órbita aparecem e somem juntas.
+  const isOrbitActive = useIsVisible(sectionRef, ORBIT_ACTIVE_MARGIN);
   const reducedMotion = useReducedMotion();
   const hasWebGL = useSupportsWebGL();
 
@@ -78,6 +80,9 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
 
   function startTravel(destination: number) {
     if (journeyRef.current.travel || destination < 0 || destination >= orbits.length) return;
+    // Encaixa a parada atual inteira na tela antes de travar a rolagem, para a viagem ser vista.
+    const currentStop = Math.round(journeyRef.current.progressTarget);
+    scrollToStop(Math.min(lastStop, Math.max(0, currentStop)), true);
     const next = { from: orbitIndex, to: destination };
     journeyRef.current.travel = next;
     setTravel(next);
@@ -117,7 +122,7 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
       <OrbitScene
         orbits={orbits}
         journeyRef={journeyRef}
-        isSceneVisible={isVisible}
+        isSceneVisible={isOrbitActive}
         onProgress={handleProgress}
         onStopChange={setActiveStop}
         onTravelEnd={handleTravelEnd}
@@ -125,27 +130,32 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
       <div className="sticky top-0 h-dvh overflow-hidden">
         <JourneyIntro ref={introRef} />
         <div
-          aria-live="polite"
-          className={cn(
-            'absolute inset-x-4 bottom-24 transition duration-300 ease-out-soft sm:right-auto sm:left-12 sm:w-md md:top-1/2 md:bottom-auto md:-translate-y-1/2 lg:left-24',
-            activeProject ? 'opacity-100' : 'pointer-events-none translate-y-4 opacity-0',
-          )}
+          inert={!isOrbitActive}
+          className={cn('absolute inset-0', fadeClasses(isOrbitActive, 'none'))}
         >
-          {activeProject && <ProjectSheet project={activeProject} className="bg-space-950/60" />}
+          <div
+            aria-live="polite"
+            className={cn(
+              'absolute inset-x-4 bottom-24 sm:right-auto sm:left-12 sm:w-md md:top-1/2 md:bottom-auto md:-translate-y-1/2 lg:left-24',
+              fadeClasses(Boolean(activeProject)),
+            )}
+          >
+            {activeProject && <ProjectSheet project={activeProject} className="bg-space-950/60" />}
+          </div>
+          <TravelNotice notice={notice} />
+          <StopTrail
+            labels={['Visão da órbita', ...orbit.map((project) => project.name)]}
+            activeStop={activeStop}
+            onSelect={(stop) => scrollToStop(stop)}
+          />
+          <OrbitSwitcher
+            orbitIndex={orbitIndex}
+            orbitSizes={orbits.map((item) => item.length)}
+            isTraveling={travel !== null}
+            isAtLastStop={activeStop === lastStop}
+            onTravel={startTravel}
+          />
         </div>
-        <TravelNotice notice={notice} />
-        <StopTrail
-          labels={['Visão da órbita', ...orbit.map((project) => project.name)]}
-          activeStop={activeStop}
-          onSelect={(stop) => scrollToStop(stop)}
-        />
-        <OrbitSwitcher
-          orbitIndex={orbitIndex}
-          orbitSizes={orbits.map((item) => item.length)}
-          isTraveling={travel !== null}
-          isAtLastStop={activeStop === lastStop}
-          onTravel={startTravel}
-        />
       </div>
     </section>
   );
