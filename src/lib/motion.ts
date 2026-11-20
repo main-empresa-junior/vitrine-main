@@ -10,6 +10,16 @@ export const MOTION = {
   exitDim: 0.35,
 } as const;
 
+// Tempos do chat com o Orbi, em milissegundos.
+export const CHAT_TIMING = {
+  typingMsPerChar: 8,
+  typingMinMs: 400,
+  typingMaxMs: 1000,
+  pointingMs: 900,
+  redirectMs: 800,
+  reducedRedirectMs: 300,
+} as const;
+
 // Transições curtas de interface: esmaecimento com um deslocamento pequeno, que some no modo reduzido.
 const FADE_BASE = 'transition duration-300 ease-out-soft motion-reduce:translate-y-0';
 const FADE_HIDDEN_OFFSET = {
