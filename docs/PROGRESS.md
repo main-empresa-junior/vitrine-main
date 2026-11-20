@@ -181,3 +181,32 @@
   CSS após 700 ms e fica pelo menos 400 ms (`WaitingLinger`).
 - Pendente: os projetos de teste antigos ficaram incompletos para as regras novas; rode de novo o
   cenário na `test-data` (o seed foi atualizado).
+
+## Chat de dúvidas com o Orbi (concluída)
+
+- **Dados:** perguntas, respostas e avisos de redirecionamento em `features/assistant/faq.ts`
+  (respostas ainda em [colchetes], esperando os textos da Main). O reducer puro
+  `features/assistant/conversation.ts` cuida do histórico, da pergunta em espera, das perguntas
+  disponíveis, do redirecionamento em andamento, do bloqueio de cliques repetidos e do recomeço;
+  o estado salvo no `sessionStorage` é validado com zod. Testes em `conversation.test.ts`.
+- **Chat:** o "?" virou botão (`aria-expanded`/`aria-controls`) que carrega o painel
+  (`components/assistant/`) por import dinâmico na primeira abertura. Diálogo não modal "Converse
+  com o Orbi", foco na primeira pergunta ao abrir e de volta no "?" ao fechar (X, Esc ou o próprio
+  "?"), histórico `aria-live`, indicador "Orbi está digitando" com tempo proporcional à resposta
+  (até 1 s). Tempos em `CHAT_TIMING` (`lib/motion.ts`).
+- **Contato:** "Escrever e-mail" (mailto com assunto e corpo, `contactMailto` aceita corpo),
+  e-mail visível e "Copiar e-mail" com o Toast "E-mail copiado"; o `ToastProvider` passou a
+  envolver o site público.
+- **Redirecionamento:** aviso do Orbi com piscadela (pose `wink`, no avatar e no Orbi do canto) e
+  navegação após 800 ms (300 ms sem animação). Âncoras da home fecham o chat, rolam até a seção e
+  focam o título; outras páginas usam o próprio link (barra de carregamento) com o chat aberto.
+  Clique do meio e com Ctrl/Cmd/Shift seguem o link direto.
+- **Orbi:** com o chat aberto para de brincar, fica na pose `talking` olhando para o painel e
+  aponta (`pointing`) quando a resposta chega.
+- **Correção:** vindo de outra página, links para `/#todos` e `/#sobre` (inclusive os do
+  cabeçalho) não rolavam até a seção, porque o Next rolava ainda na tela de carregamento.
+  `ScrollToHashOnArrival` rola quando o conteúdo da home monta.
+- **Testes:** `e2e/orbi-chat.spec.ts` (pergunta, resposta, aviso único com clique duplo, chegada e
+  foco em "Todos os projetos"; contato e Esc devolvendo o foco ao "?"). Conferido no navegador em
+  1440 e 390 px (folha de baixo no celular) e com animações reduzidas.
+- Próximo: textos reais das respostas do chat, de "Sobre a Main" e de contato.
