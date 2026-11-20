@@ -1,14 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import type { ShowcaseProject } from '@/features/projects/model';
 import { useIsVisible } from '@/hooks/useIsVisible';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useSupportsWebGL } from '@/hooks/useSupportsWebGL';
 import { splitIntoOrbits } from '@/lib/orbits';
 import { cn } from '@/lib/utils/cn';
-import { supportsWebGL } from '@/lib/webgl';
 
 import type { JourneyState, Travel } from './journey';
 import { JourneyIntro } from './JourneyIntro';
@@ -27,8 +27,6 @@ const EXTRA_VIEWPORTS = 160;
 const INTRO_FADE_SPEED = 2.5;
 const INTRO_LIFT_PX = 60;
 
-const noopSubscribe = () => () => {};
-
 type OrbitExperienceProps = {
   projects: readonly ShowcaseProject[];
 };
@@ -43,7 +41,7 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   const introRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsVisible(sectionRef);
   const reducedMotion = useReducedMotion();
-  const hasWebGL = useSyncExternalStore(noopSubscribe, supportsWebGL, () => true);
+  const hasWebGL = useSupportsWebGL();
 
   const orbit = orbits[orbitIndex] ?? [];
   const lastStop = orbit.length;

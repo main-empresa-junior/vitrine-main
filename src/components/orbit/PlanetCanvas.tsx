@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef, useSyncExternalStore } from 'react';
+import { useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 
 import { useIsVisible } from '@/hooks/useIsVisible';
+import { useSupportsWebGL } from '@/hooks/useSupportsWebGL';
 import { cn } from '@/lib/utils/cn';
-import { MAX_PIXEL_RATIO, supportsWebGL } from '@/lib/webgl';
+import { MAX_PIXEL_RATIO } from '@/lib/webgl';
 
 import { Planet, type PlanetProps } from './Planet';
 import { PlanetThumbnail } from './PlanetThumbnail';
@@ -17,12 +18,10 @@ type PlanetCanvasProps = Omit<PlanetProps, 'radius'> & {
   className?: string;
 };
 
-const noopSubscribe = () => () => {};
-
 export function PlanetCanvas({ className, ...planet }: PlanetCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsVisible(containerRef, '100px');
-  const hasWebGL = useSyncExternalStore(noopSubscribe, supportsWebGL, () => true);
+  const hasWebGL = useSupportsWebGL();
   const cameraDistance = CAMERA_DISTANCE_PER_RADIUS * (planet.hasRing ? 1.35 : 1);
 
   return (

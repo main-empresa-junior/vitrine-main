@@ -77,6 +77,20 @@
 - Botão de dúvida abre `mailto:` com assunto, usando `NEXT_PUBLIC_CONTACT_EMAIL`.
 - Parado no modo de movimento reduzido.
 
-## Próximo
+## Etapa 7 — acabamento (concluída)
 
-Etapa 7: acabamento e publicação.
+- `not-found`, `error` (com `retry`) e `loading` no visual do site, via `StatusScreen` e
+  `LoadingState`; `sitemap.ts`, `robots.ts` e `metadataBase` a partir de `NEXT_PUBLIC_SITE_URL`.
+- Auditoria em 375 px: cabeçalho sólido no celular, sem rolagem horizontal; 404 com um Orbi só.
+- `README.md` em inglês.
+- Reaproveitamento: `useSupportsWebGL`, `SectionTitle`, `TagList`, `ReorderButtons`,
+  `normalizeForSearch` extraídos ao aparecerem pela segunda vez.
+
+## Pendências
+
+- Textos de "Sobre a Main" e "Contato" (marcados com `[…]`).
+- Testar o painel com a sessão real (criar, editar, publicar, enviar telas, excluir).
+- Logos `icon-on-light.png` e `icon-on-dark.png` não vieram com os demais arquivos.
+- Gerar as texturas leva alguns segundos com muitos planetas; se pesar, reduzir a resolução ou
+  movê-las para um Web Worker.
+- Auditoria completa com leitor de tela e em 768/1024 px ainda não foi feita.
