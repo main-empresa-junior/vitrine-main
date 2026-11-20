@@ -63,3 +63,19 @@ for (const width of WIDTHS) {
     }
   }
 }
+
+// Zoom de 400% numa tela de 1280 px equivale a 320 px de largura (WCAG 1.4.10).
+test.describe('reflow at 320px', () => {
+  test.use({ viewport: { width: 320, height: 640 } });
+
+  for (const check of PAGES.filter((item) => !item.needsLogin)) {
+    test(`${check.name} has no horizontal scroll`, async ({ page }) => {
+      await check.open(page);
+      await expect(page.locator('main')).toBeVisible();
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+  }
+});

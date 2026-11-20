@@ -5,7 +5,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: 'bg-brand-gradient text-white hover:brightness-110',
-  secondary: 'border-2 border-border text-foreground hover:border-focus',
+  secondary: 'border-border text-foreground hover:border-focus',
   ghost: 'text-foreground hover:bg-surface-strong',
   danger: 'bg-danger-700 text-white hover:brightness-110',
 };
@@ -27,8 +27,9 @@ export function buttonClasses({
   size = 'md',
   className,
 }: ButtonStyleOptions = {}): string {
+  // A borda transparente aparece na cor do sistema no modo de alto contraste (forced-colors).
   return cn(
-    'inline-flex items-center justify-center gap-2 rounded-full font-bold transition duration-200 ease-out-soft disabled:cursor-not-allowed disabled:opacity-60',
+    'inline-flex items-center border-2 border-transparent justify-center gap-2 rounded-full font-bold transition duration-200 ease-out-soft disabled:cursor-not-allowed disabled:opacity-60',
     VARIANT_CLASSES[variant],
     SIZE_CLASSES[size],
     className,
