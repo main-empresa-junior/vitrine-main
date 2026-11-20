@@ -138,6 +138,47 @@
   );
 }
 
+/* Céu sem WebGL: duas malhas de estrelas em tamanhos diferentes e a nebulosa da marca. */
+@utility bg-starfield {
+  background-color: var(--color-space-950);
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, var(--color-white), transparent),
+    radial-gradient(1px 1px at 63% 42%, var(--color-mist-100), transparent),
+    radial-gradient(1.5px 1.5px at 38% 77%, var(--color-white), transparent),
+    radial-gradient(1px 1px at 86% 64%, var(--color-mist-300), transparent),
+    radial-gradient(2px 2px at 24% 52%, var(--color-white), transparent),
+    radial-gradient(1px 1px at 74% 12%, var(--color-mist-100), transparent),
+    radial-gradient(1.5px 1.5px at 92% 88%, var(--color-white), transparent),
+    radial-gradient(1px 1px at 47% 6%, var(--color-mist-300), transparent),
+    radial-gradient(
+      60% 40% at 18% 22%,
+      color-mix(in srgb, var(--color-brand-cyan) 14%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      55% 45% at 32% 30%,
+      color-mix(in srgb, var(--color-brand-violet) 18%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      40% 35% at 48% 18%,
+      color-mix(in srgb, var(--color-brand-magenta) 12%, transparent),
+      transparent
+    );
+  background-size:
+    240px 240px,
+    240px 240px,
+    240px 240px,
+    240px 240px,
+    370px 370px,
+    370px 370px,
+    370px 370px,
+    370px 370px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+}
+
 @layer base {
   body {
     @apply bg-background font-sans text-body text-foreground antialiased;

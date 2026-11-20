@@ -65,3 +65,31 @@ export function glowTexture(color: string): Texture {
     return new CanvasTexture(canvas);
   });
 }
+
+const GHOST_SIZE = 256;
+const GHOST_DASH = [18, 14];
+
+export function ghostPlanetTexture(color: string): Texture {
+  return memo(`ghost|${color}`, () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = GHOST_SIZE;
+    const context = canvas.getContext('2d');
+    if (context) {
+      const half = GHOST_SIZE / 2;
+      context.strokeStyle = color;
+      context.fillStyle = color;
+      context.lineWidth = 7;
+      context.setLineDash(GHOST_DASH);
+      context.beginPath();
+      context.arc(half, half, half - 12, 0, Math.PI * 2);
+      context.stroke();
+      context.font = `700 ${GHOST_SIZE * 0.42}px sans-serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText('?', half, half + 6);
+    }
+    const texture = new CanvasTexture(canvas);
+    texture.colorSpace = SRGBColorSpace;
+    return texture;
+  });
+}

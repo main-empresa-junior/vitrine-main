@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
+import { CssStarfield } from '@/components/site/CssStarfield';
 import type { ShowcaseProject } from '@/features/projects/model';
 import { useIsVisible } from '@/hooks/useIsVisible';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -82,15 +83,16 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
     setActiveStop(null);
   }
 
-  if (!hasWebGL || orbits.length === 0) {
+  if (!hasWebGL) {
     return (
       <section className="px-5 pt-40 pb-6 sm:px-12 lg:px-24">
-        <h1 className="font-display text-display">Projetos em órbita</h1>
-        <p className="mt-5 max-w-prose text-lead text-muted">
-          {orbits.length === 0
-            ? 'Os projetos da Main aparecem aqui em breve.'
-            : 'Seu navegador não conseguiu mostrar a cena 3D. Os projetos estão na lista abaixo.'}
-        </p>
+        <CssStarfield />
+        <div className="relative">
+          <h1 className="font-display text-display">Projetos em órbita</h1>
+          <p className="mt-5 max-w-prose text-lead text-muted">
+            Seu navegador não conseguiu mostrar a cena 3D. Os projetos estão na lista abaixo.
+          </p>
+        </div>
       </section>
     );
   }
