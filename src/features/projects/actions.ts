@@ -8,10 +8,11 @@ import { requireTeamMember } from '@/features/auth/session';
 import { createClient } from '@/lib/supabase/server';
 
 import { PROJECT_IMAGES_BUCKET, PROJECTS_CACHE_TAG } from './constants';
-import { toProjectColumns } from './model';
+import { toFormValues, toProjectColumns } from './model';
 import { type MoveDirection, moveItem } from './ordering';
+import { getProjectForEditing } from './queries';
 import { SAVE_NOTICE_PARAM, saveNoticeFor } from './save-notice';
-import { projectFormSchema, type ProjectFormValues } from './schema';
+import { type ProjectFormValues, projectPublishSchema, schemaFor } from './schema';
 
 const UNIQUE_VIOLATION = '23505';
 const idSchema = z.uuid();
@@ -82,8 +83,15 @@ export async function saveProject(
   projectId?: string,
 ): Promise<SaveFailure> {
   await requireTeamMember();
-  const parsed = projectFormSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: 'Confira os campos destacados.' };
+  const parsed = schemaFor(input.published).safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: input.published
+        ? 'Faltam informações para publicar. Confira a lista no topo do formulário.'
+        : 'Confira os campos destacados.',
+    };
+  }
   if (projectId && !idSchema.safeParse(projectId).success) {
     return { ok: false, error: 'Projeto não encontrado.' };
   }
@@ -126,9 +134,23 @@ function saveError(code: string): SaveFailure {
   return { ok: false, error: 'Não foi possível salvar o projeto. Tente de novo.' };
 }
 
+// Funcionalidades e telas ficam em outras tabelas: a regra de publicação delas é garantida aqui.
+async function missingForPublishing(id: string): Promise<string | null> {
+  const row = await getProjectForEditing(id);
+  if (!row) return 'Projeto não encontrado.';
+  const result = projectPublishSchema.safeParse(toFormValues({ ...row, published: true }));
+  if (result.success) return null;
+  const messages = [...new Set(result.error.issues.map((issue) => issue.message))];
+  return `Para publicar, abra o projeto e complete: ${messages.join(' ')}`;
+}
+
 export async function setProjectPublished(id: string, published: boolean): Promise<ActionResult> {
   await requireTeamMember();
   if (!idSchema.safeParse(id).success) return { ok: false, error: 'Projeto não encontrado.' };
+  if (published) {
+    const missing = await missingForPublishing(id);
+    if (missing) return { ok: false, error: missing };
+  }
   const supabase = await createClient();
   const { error } = await supabase.from('projects').update({ published }).eq('id', id);
   if (error) return { ok: false, error: 'Não foi possível mudar a publicação.' };

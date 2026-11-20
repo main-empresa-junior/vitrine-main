@@ -7,7 +7,6 @@ type ProjectFeaturesProps = {
 };
 
 export function ProjectFeatures({ features, accentColor }: ProjectFeaturesProps) {
-  if (features.length === 0) return null;
   return (
     <section aria-labelledby="features-title">
       <SectionTitle id="features-title">Funcionalidades</SectionTitle>

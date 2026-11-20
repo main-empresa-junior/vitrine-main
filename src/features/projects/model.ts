@@ -75,7 +75,13 @@ export function toProjectDetails(row: ProjectRowWithChildren): ProjectDetails {
 }
 
 export function toFormValues(row: ProjectRowWithChildren): ProjectFormValues {
-  const details = toProjectDetails(row);
+  return detailsToFormValues(toProjectDetails(row), row.published);
+}
+
+export function detailsToFormValues(
+  details: ProjectDetails,
+  published: boolean,
+): ProjectFormValues {
   return {
     name: details.name,
     slug: details.slug,
@@ -90,7 +96,7 @@ export function toFormValues(row: ProjectRowWithChildren): ProjectFormValues {
     palette: details.palette,
     texture: details.texture,
     hasRing: details.hasRing,
-    published: row.published,
+    published,
     images: details.images.map(({ path, alt }) => ({ path, alt })),
   };
 }

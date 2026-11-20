@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { LazyPlanetCanvas } from '@/components/orbit/LazyPlanetCanvas';
 import { ProjectSheet } from '@/components/orbit/ProjectSheet';
-import { projectFormSchema, type ProjectFormValues } from '@/features/projects/schema';
+import { projectDraftSchema, type ProjectFormValues } from '@/features/projects/schema';
 import { brandColors } from '@/lib/design-tokens';
 import { seedFromText } from '@/lib/textures';
 
@@ -22,7 +22,7 @@ type ProjectPreviewProps = {
 
 export function ProjectPreview({ projectId }: ProjectPreviewProps) {
   const values = useFormContext<ProjectFormValues>().watch();
-  const typedPalette = projectFormSchema.shape.palette.safeParse(values.palette);
+  const typedPalette = projectDraftSchema.shape.palette.safeParse(values.palette);
   // Gerar a textura custa alguns milissegundos; adiar evita travar a digitação.
   const palette = useDeferredValue(typedPalette.success ? typedPalette.data : FALLBACK_PALETTE);
   const texture = useDeferredValue(values.texture);

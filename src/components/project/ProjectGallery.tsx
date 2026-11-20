@@ -17,7 +17,6 @@ type ProjectGalleryProps = {
 
 export function ProjectGallery({ images, projectName }: ProjectGalleryProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  if (images.length === 0) return null;
   const current = openIndex === null ? undefined : images[openIndex];
 
   function step(offset: number) {

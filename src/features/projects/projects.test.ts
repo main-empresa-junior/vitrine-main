@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { moveItem } from './ordering';
-import { projectFormSchema } from './schema';
+import { projectDraftSchema, projectPublishSchema, schemaFor, TEXT_LIMITS } from './schema';
 import { SLUG_PATTERN, slugify } from './slug';
 
 describe('slugify', () => {
@@ -35,43 +35,96 @@ describe('moveItem', () => {
   });
 });
 
-describe('projectFormSchema', () => {
-  const valid = {
+describe('draft and publish schemas', () => {
+  const complete = {
     name: 'Engasguei',
     slug: 'engasguei',
     client: 'SAMU',
     year: 2026,
     type: 'app',
     summary: 'Alerta de engasgo.',
-    description: '',
+    description: 'Envia a localização e a ficha médica aos contatos.',
     technologies: ['Kotlin'],
-    developers: [],
-    features: [{ title: 'Alerta', description: '' }],
+    developers: ['Ana'],
+    features: [
+      { title: 'Alerta', description: 'Um toque envia o alerta.' },
+      { title: 'Ficha médica', description: 'Dados salvos no aparelho.' },
+      { title: 'Guia', description: 'Manobra passo a passo.' },
+    ],
     palette: { primary: '#FF6B5B', accent: '#FFE3DC', background: '#4A0B18' },
     texture: 'rocky',
     hasRing: false,
-    published: false,
+    published: true,
     images: [{ path: 'b1c2-d3.png', alt: 'Tela inicial' }],
   };
+  const incomplete = {
+    ...complete,
+    client: '',
+    summary: '',
+    description: '',
+    technologies: [],
+    developers: [],
+    features: [{ title: 'Alerta', description: '' }],
+    images: [],
+    published: false,
+  };
 
-  it('accepts a complete project', () => {
-    expect(projectFormSchema.safeParse(valid).success).toBe(true);
+  it('accepts a complete project for publishing', () => {
+    expect(projectPublishSchema.safeParse(complete).success).toBe(true);
+  });
+
+  it('accepts an incomplete draft', () => {
+    expect(projectDraftSchema.safeParse(incomplete).success).toBe(true);
+  });
+
+  it('lists every missing field when publishing an incomplete project', () => {
+    const result = projectPublishSchema.safeParse({ ...incomplete, published: true });
+    expect(result.success).toBe(false);
+    const paths = result.error?.issues.map((issue) => issue.path.join('.'));
+    expect(paths).toEqual(
+      expect.arrayContaining([
+        'client',
+        'summary',
+        'description',
+        'technologies',
+        'developers',
+        'features',
+        'features.0.description',
+        'images',
+      ]),
+    );
+  });
+
+  it('enforces the text limits in both schemas', () => {
+    const tooLong = { ...complete, name: 'x'.repeat(TEXT_LIMITS.name + 1) };
+    expect(projectDraftSchema.safeParse(tooLong).success).toBe(false);
+    expect(projectPublishSchema.safeParse(tooLong).success).toBe(false);
+  });
+
+  it('picks the schema from the published flag', () => {
+    expect(schemaFor(true)).toBe(projectPublishSchema);
+    expect(schemaFor(false)).toBe(projectDraftSchema);
+  });
+
+  it('still requires a name for drafts', () => {
+    expect(projectDraftSchema.safeParse({ ...incomplete, name: ' ' }).success).toBe(false);
   });
 
   it('rejects invalid slug, color and image path', () => {
-    expect(projectFormSchema.safeParse({ ...valid, slug: 'Com Espaço' }).success).toBe(false);
+    expect(projectDraftSchema.safeParse({ ...complete, slug: 'Com Espaço' }).success).toBe(false);
     expect(
-      projectFormSchema.safeParse({ ...valid, palette: { ...valid.palette, primary: 'red' } })
+      projectDraftSchema.safeParse({
+        ...complete,
+        palette: { ...complete.palette, primary: 'red' },
+      }).success,
+    ).toBe(false);
+    expect(
+      projectDraftSchema.safeParse({ ...complete, images: [{ path: '../secret.png', alt: 'x' }] })
         .success,
     ).toBe(false);
     expect(
-      projectFormSchema.safeParse({ ...valid, images: [{ path: '../secret', alt: 'x' }] }).success,
-    ).toBe(false);
-  });
-
-  it('requires alt text for every image', () => {
-    expect(
-      projectFormSchema.safeParse({ ...valid, images: [{ path: 'a.png', alt: '  ' }] }).success,
-    ).toBe(false);
+      projectDraftSchema.safeParse({ ...complete, images: [{ path: 'seed/tela-1.png', alt: 'x' }] })
+        .success,
+    ).toBe(true);
   });
 });
