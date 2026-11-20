@@ -231,3 +231,57 @@
 - **Testes:** `e2e/orbi-chat.spec.ts` (canto escondido e de volta, X, Esc, redirecionamento) e
   `e2e/mobile-menu.spec.ts` (390 px: todas as opções, foco, link para seção, Esc, menu fecha o
   chat). O menu do painel foi conferido numa rota temporária, sem sessão real.
+
+## Acessibilidade, movimento reduzido, login e VLibras (concluída)
+
+### Auditoria (WCAG 2.2 AA)
+
+Encontrado e corrigido:
+
+- **Contraste:** a área pública é sempre escura, mas o fundo do `<body>` seguia o tema guardado; com
+  o tema claro, o texto claro ficava sobre fundo claro. O layout público ganhou fundo escuro
+  próprio (`isolate bg-space-950`).
+- **Lista do carrossel:** os `li` tinham `role="group"`, o que quebrava a lista; o papel passou para
+  um `div` interno.
+- **Estrutura:** link "Pular para o conteúdo" em todas as páginas; `MainContent` (o `main` de cada
+  página, focável) recebe o foco ao trocar de rota (o Next já anuncia o título da página nova).
+- **Foco escondido (2.4.11):** `scroll-padding` no `html` para o foco não parar atrás do cabeçalho
+  ou dos controles de baixo. Voltando com Shift+Tab para a órbita, a página rola até a parada
+  atual. O `<dialog>` modal prende o Tab dentro dele.
+- **Órbita pelo teclado:** setas, Home e End na trilha trocam de planeta; anúncio curto do planeta
+  em destaque em vez da ficha inteira; "N projetos encontrados" nos filtros.
+- **Formulários:** campos marcados como "obrigatório" ou "obrigatório para publicar" (visível e
+  lido); contador de caracteres descrito no campo e anunciado só ao atingir o limite.
+- **Alto contraste:** botões com borda transparente, que o `forced-colors` desenha.
+
+Testes novos: `accessibility.spec.ts` (axe em home, projeto, login, lista e formulário do painel,
+nos dois temas, nos dois modos de movimento, em 390 e 1440 px, e reflow em 320 px),
+`keyboard.spec.ts`, `reduced-motion.spec.ts` e `vlibras.spec.ts`.
+
+Limitações conhecidas: os testes do painel só rodam com `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` (não
+foram rodados aqui, sem sessão no Supabase); a home vazia só é verificada depois do `reset` da
+`test-data`; texto ampliado em 200%, NVDA e VoiceOver estão no roteiro manual de
+`docs/ACCESSIBILITY.md`.
+
+### Movimento reduzido
+
+- Tokens `--duration-reduced` (200 ms) e `--ease-reduced`; a regra central em `globals.css` limita
+  as transições a opacidade e cor, então nada desliza ou cresce, mas tudo esmaece.
+- Câmera e troca de órbita: véu escuro (`reduced-journey.ts`, testado) que escurece, troca a câmera
+  no escuro e clareia; sem foguete; aviso "Chegando à órbita N". A ficha troca com esmaecimento.
+- Chat, menu, diálogos, toasts, Orbi do canto e tela de espera abrem e fecham esmaecendo; a barra
+  de carregamento avança em etapas.
+
+### Login
+
+- "Voltar ao site" com seta acima do cartão e o logo como link para a home.
+
+### VLibras
+
+- `components/accessibility/VLibras.tsx` no layout público e no login, script `lazyOnload`,
+  inicialização única com `position: 'L'` (documentação v7), escondido no painel. O botão fica no
+  meio do cabeçalho em telas estreitas e abaixo dele à esquerda a partir de 1024 px. Sem CSP no
+  projeto hoje; os domínios necessários estão em `docs/ACCESSIBILITY.md`.
+
+Próximo: textos reais do chat, de "Sobre a Main" e de contato; rodar os testes do painel com um
+usuário de teste.

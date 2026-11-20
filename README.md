@@ -30,6 +30,23 @@ Useful scripts:
 | `npm run typecheck` | Route types + TypeScript                                     |
 | `npm run test`      | Vitest for the pure logic (orbits, textures, slugs, ...)     |
 | `npm run db:types`  | Regenerates `src/types/database.ts` from the linked Supabase |
+| `npm run test:e2e`  | Playwright: navigation, chat, menu, keyboard, axe, VLibras   |
+
+The end-to-end tests run locally against a production build and need published projects (the
+`misto` scenario of the `test-data` branch). Dashboard tests run only when `E2E_USER_EMAIL` and
+`E2E_USER_PASSWORD` of a test user are set in the shell; otherwise they are skipped.
+
+## Accessibility
+
+The site targets WCAG 2.2 AA. Automated checks (axe, keyboard, reduced motion, reflow) are part of
+`npm run test:e2e`; the manual checklist for each release is in
+[`docs/ACCESSIBILITY.md`](./docs/ACCESSIBILITY.md).
+
+Public pages and the login page load the **VLibras** widget, the Brazilian federal government's
+Portuguese-to-Libras translator, from `https://vlibras.gov.br`. It is a third-party service: the
+visitor's browser downloads its scripts, fonts and avatar from government servers. The site works
+normally when the service is unavailable. Mention it as a third-party service on any future
+privacy page.
 
 ## Environment variables
 
