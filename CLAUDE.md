@@ -183,3 +183,13 @@ Never use `--no-verify`, `eslint-disable` without a reason in the same line, or 
 5. `docs/PROGRESS.md` is updated with what was done and what is next.
 6. Commit with Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`),
    one logical change per commit.
+
+## Commits
+
+- Commit freely, without asking for confirmation, whenever a logical change is complete and the
+  checks of the definition of done pass. Do not push; the maintainer pushes.
+- Commits are authored by the repository owner through the local git config. Never change
+  `user.name`, `user.email` or the commit author.
+- Never add AI attribution to commit messages or pull requests: no `Co-Authored-By` trailers, no
+  "Generated with Claude Code" lines, no session links. The message is only the Conventional Commit
+  subject and, when useful, a short body.

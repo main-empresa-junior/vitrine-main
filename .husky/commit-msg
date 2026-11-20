@@ -1,0 +1,9 @@
+# Remove qualquer linha de autoria de IA que escape das configurações do Claude Code
+sed -i -E \
+  -e '/^Co-Authored-By:.*(Claude|anthropic)/Id' \
+  -e '/Generated with \[?Claude Code/Id' \
+  -e '/^Claude-Session:/Id' \
+  "$1"
+
+# Remove linhas em branco que sobrarem no fim da mensagem
+sed -i -e ':a' -e '/^\n*$/{$d;N;ba' -e '}' "$1"
