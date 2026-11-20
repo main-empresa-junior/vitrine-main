@@ -72,6 +72,27 @@
   --ease-out-soft: cubic-bezier(0.2, 0.7, 0.3, 1);
 
   --animate-beckon: beckon 1.6s ease-in-out infinite;
+  --animate-progress-slide: progress-slide 1.4s var(--ease-out-soft) infinite;
+  /* A tela do Orbi só aparece se a espera passar de 700 ms (o mesmo valor de waiting-store.ts). */
+  --animate-appear-late: appear 300ms var(--ease-out-soft) 700ms both;
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes progress-slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(250%);
+    }
+  }
 
   @keyframes beckon {
     0%,

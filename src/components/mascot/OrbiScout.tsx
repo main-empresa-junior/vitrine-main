@@ -12,7 +12,7 @@ type OrbiScoutProps = {
 export function OrbiScout({ className }: OrbiScoutProps) {
   return (
     <div aria-hidden="true" className={cn('orbi scout', className)}>
-      <OrbiFigure hasSpyglass />
+      <OrbiFigure pose="spyglass" />
     </div>
   );
 }

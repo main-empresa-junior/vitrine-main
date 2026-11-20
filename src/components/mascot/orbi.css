@@ -115,6 +115,17 @@
   transform: rotate(-140deg);
 }
 
+/* Segurar a placa de espera com os dois braços, balançando de leve */
+.orbi.hold-sign {
+  animation: orbi-wait 2.4s ease-in-out infinite;
+}
+.orbi.hold-sign .orbi-arm-left {
+  transform: rotate(150deg);
+}
+.orbi.hold-sign .orbi-arm-right {
+  transform: rotate(-150deg);
+}
+
 [data-motion='reduced'] .orbi,
 [data-motion='reduced'] .orbi *,
 [data-motion='reduced'] .orbi-help {
@@ -344,5 +355,14 @@
   }
   75% {
     transform: translateY(-3px) rotate(10deg);
+  }
+}
+@keyframes orbi-wait {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
   }
 }

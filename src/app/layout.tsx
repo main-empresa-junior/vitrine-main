@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Figtree, Unbounded } from 'next/font/google';
 import Script from 'next/script';
 
+import { WaitingLinger } from '@/components/mascot/WaitingLinger';
+import { NavigationProgress } from '@/components/site/NavigationProgress';
 import { PREFERENCES_SCRIPT } from '@/lib/preferences';
 import { SITE_URL } from '@/lib/site';
 
@@ -41,7 +43,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Script id="preferences" strategy="beforeInteractive">
           {PREFERENCES_SCRIPT}
         </Script>
+        <NavigationProgress />
         {children}
+        <WaitingLinger />
       </body>
     </html>
   );

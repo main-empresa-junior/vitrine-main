@@ -11,12 +11,14 @@ const PANEL = '#0A0F33';
 
 const SPYGLASS = '#C9D2EE';
 
+export type OrbiPose = 'default' | 'spyglass' | 'sign';
+
 type OrbiFigureProps = {
-  hasSpyglass?: boolean;
+  pose?: OrbiPose;
 };
 
 // Astronauta com capacete em hexágono, como o logo da Main.
-export function OrbiFigure({ hasSpyglass = false }: OrbiFigureProps) {
+export function OrbiFigure({ pose = 'default' }: OrbiFigureProps) {
   const id = useId();
   const rim = `${id}-rim`;
   const visor = `${id}-visor`;
@@ -103,7 +105,14 @@ export function OrbiFigure({ hasSpyglass = false }: OrbiFigureProps) {
         strokeLinecap="round"
       />
       <circle cx="52" cy="-8" r="3.5" fill={brandColors.magenta} />
-      {hasSpyglass && (
+      {pose === 'sign' && (
+        // Hastes da placa, presas nas mãos levantadas pela pose (classe hold-sign).
+        <g className="orbi-sign-sticks" stroke={SPYGLASS} strokeWidth="3" strokeLinecap="round">
+          <line x1="17" y1="50" x2="17" y2="-14" />
+          <line x1="87" y1="50" x2="87" y2="-14" />
+        </g>
+      )}
+      {pose === 'spyglass' && (
         <g className="orbi-spyglass" transform="rotate(-24 64 38)">
           <rect x="60" y="33" width="40" height="10" rx="3" fill={SPYGLASS} />
           <rect x="56" y="34.5" width="6" height="7" rx="1.5" fill={PANEL} />

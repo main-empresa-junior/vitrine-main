@@ -1,5 +1,5 @@
-import { LoadingState } from '@/components/ui/LoadingState';
+import { WaitingScreen } from '@/components/mascot/WaitingScreen';
 
 export default function Loading() {
-  return <LoadingState />;
+  return <WaitingScreen />;
 }
