@@ -8,14 +8,21 @@ import unusedImports from 'eslint-plugin-unused-imports';
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'coverage/**',
+    'next-env.d.ts',
+    'docs/prototype/**',
+    'src/types/database.ts',
+  ]),
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
     },
     rules: {
-      // Imports grouped: libraries, then project aliases (@/), then relative files, then styles
       'simple-import-sort/imports': [
         'error',
         {
@@ -24,13 +31,22 @@ const eslintConfig = defineConfig([
       ],
       'simple-import-sort/exports': 'error',
 
-      // Unused imports are removed automatically; unused variables only warn
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
-        'warn',
+        'error',
         { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
       ],
+
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/ban-ts-comment': [
+        'error',
+        { 'ts-ignore': true, 'ts-nocheck': true, 'ts-expect-error': 'allow-with-description' },
+      ],
+      '@typescript-eslint/consistent-type-imports': 'error',
+      'no-var': 'error',
+      'prefer-const': 'error',
+      eqeqeq: ['error', 'always'],
     },
   },
   prettier,
