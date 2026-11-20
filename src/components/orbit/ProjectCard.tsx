@@ -17,6 +17,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         texture={project.texture}
         seed={project.seed}
         size={72}
+        className="self-start"
       />
       <div className="flex flex-col gap-2">
         <p className="text-small font-semibold text-muted">

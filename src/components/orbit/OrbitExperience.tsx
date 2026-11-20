@@ -26,6 +26,7 @@ const VIEWPORTS_PER_STOP = 100;
 const EXTRA_VIEWPORTS = 160;
 const INTRO_FADE_SPEED = 2.5;
 const INTRO_LIFT_PX = 60;
+const SCENE_VISIBLE_MARGIN = '-60% 0px 0px 0px';
 
 type OrbitExperienceProps = {
   projects: readonly ShowcaseProject[];
@@ -39,7 +40,8 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   const journeyRef = useRef<JourneyState>({ orbitIndex: 0, progressTarget: 0, travel: null });
   const sectionRef = useRef<HTMLElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
-  const isVisible = useIsVisible(sectionRef);
+  // A cena some quando o fim da seção sobe acima de 60% da tela, antes de "Todos os projetos" chegar.
+  const isVisible = useIsVisible(sectionRef, SCENE_VISIBLE_MARGIN);
   const reducedMotion = useReducedMotion();
   const hasWebGL = useSupportsWebGL();
 
