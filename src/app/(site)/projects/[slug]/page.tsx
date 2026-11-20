@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { SpaceBackdrop } from '@/components/orbit/SpaceBackdrop';
 import { NextProjectLink } from '@/components/project/NextProjectLink';
 import { ProjectFacts } from '@/components/project/ProjectFacts';
 import { ProjectFeatures } from '@/components/project/ProjectFeatures';
@@ -10,6 +11,8 @@ import { SectionTitle } from '@/components/ui/SectionTitle';
 import { getPublishedProject, getPublishedProjects } from '@/features/projects/queries';
 import { projectPageBackground } from '@/lib/color';
 
+// O céu aparece por baixo da cor do projeto, translúcida e escura o bastante para manter o contraste.
+const PAGE_TINT_ALPHA = 'B3';
 // Cache Components exige ao menos um parâmetro; sem projetos publicados, este cai no 404.
 const EMPTY_SHOWCASE_SLUG = 'sem-projetos';
 
@@ -45,11 +48,16 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
   const paragraphs = project.description.split(/\n\s*\n/).filter(Boolean);
 
   return (
-    <main
-      className="px-5 pb-24 sm:px-12 lg:px-24"
-      style={{ backgroundColor: projectPageBackground(project.palette.background) }}
-    >
-      <div className="mx-auto flex max-w-6xl flex-col gap-20">
+    <main className="relative px-5 pb-24 sm:px-12 lg:px-24">
+      <SpaceBackdrop />
+      <div
+        aria-hidden="true"
+        className="fixed inset-0"
+        style={{
+          backgroundColor: `${projectPageBackground(project.palette.background)}${PAGE_TINT_ALPHA}`,
+        }}
+      />
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-20">
         <ProjectHero project={project} />
         <div className="grid gap-10 lg:grid-cols-5">
           {paragraphs.length > 0 && (

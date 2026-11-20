@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { SpaceBackdrop } from '@/components/orbit/SpaceBackdrop';
 import { Card } from '@/components/ui/Card';
 import { Logo } from '@/components/ui/Logo';
 
@@ -17,16 +18,21 @@ export default async function LoginPage({ searchParams }: PageProps<'/dashboard/
   const { next } = await searchParams;
 
   return (
-    <main className="flex min-h-dvh items-center justify-center px-5 py-10">
-      <Card className="w-full max-w-md p-9">
-        <Logo variant="onLight" priority className="dark:hidden" />
-        <Logo variant="onDark" priority className="hidden dark:block" />
-        <h1 className="mt-8 font-display text-title">Área da equipe</h1>
-        <p className="mt-2 mb-7 text-muted">
-          Entre para cadastrar e editar os projetos da vitrine.
-        </p>
-        <LoginForm next={typeof next === 'string' ? next : undefined} />
-      </Card>
+    <main
+      data-theme="dark"
+      className="relative flex min-h-dvh items-center justify-center bg-space-950 px-5 py-10"
+    >
+      <SpaceBackdrop />
+      <div data-theme="light" className="relative w-full max-w-md text-foreground">
+        <Card className="p-9">
+          <Logo variant="onLight" priority />
+          <h1 className="mt-8 font-display text-title">Área da equipe</h1>
+          <p className="mt-2 mb-7 text-muted">
+            Entre para cadastrar e editar os projetos da vitrine.
+          </p>
+          <LoginForm next={typeof next === 'string' ? next : undefined} />
+        </Card>
+      </div>
     </main>
   );
 }
