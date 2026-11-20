@@ -2,6 +2,7 @@ import { AllProjects } from '@/components/orbit/AllProjects';
 import { EmptyUniverse } from '@/components/orbit/EmptyUniverse';
 import { OrbitExperience } from '@/components/orbit/OrbitExperience';
 import { AboutSection } from '@/components/site/AboutSection';
+import { ScrollToHashOnArrival } from '@/components/site/ScrollToHashOnArrival';
 import { getPublishedProjects } from '@/features/projects/queries';
 import { getShowcaseState } from '@/lib/showcase-state';
 
@@ -20,6 +21,7 @@ export default async function HomePage() {
         </>
       )}
       <AboutSection />
+      <ScrollToHashOnArrival />
     </main>
   );
 }
