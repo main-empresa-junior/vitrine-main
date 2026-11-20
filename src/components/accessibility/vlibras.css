@@ -1,0 +1,31 @@
+/*
+ * O botão do VLibras fica num shadow root, fixo a 10px da esquerda e a 50vh - 20px do topo. A
+ * transformação no container faz dele a referência do botão, que assim pode ser reposicionado sem
+ * mexer nos arquivos do widget, longe da ficha do projeto, da trilha da órbita, do Orbi e do chat.
+ */
+#vlibras-access-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 35;
+  /* Telas estreitas: no meio do cabeçalho, entre o logo e o botão de menu. */
+  transform: translate(calc(50vw - 30px), calc(14px + 20px - 50vh));
+}
+
+/* Mesmo ponto de quebra de --breakpoint-nav: com o cabeçalho completo, fica abaixo dele à esquerda. */
+@media (min-width: 64rem) {
+  #vlibras-access-wrapper {
+    transform: translateY(calc(6.5rem + 20px - 50vh));
+  }
+}
+
+#vlibras-access-wrapper[hidden],
+#vlibras-app-root[hidden] {
+  display: none;
+}
+
+/* Foco do botão com a mesma cor de foco do site escuro. */
+body {
+  --vlibras-btn-focus-visible-outline: 3px solid var(--color-brand-glow);
+  --vlibras-btn-focus-visible-shadow: none;
+}

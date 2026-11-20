@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { VLibras } from '@/components/accessibility/VLibras';
 import { SpaceBackdrop } from '@/components/orbit/SpaceBackdrop';
 import { CssStarfield } from '@/components/site/CssStarfield';
 import { ButtonLink } from '@/components/ui/ButtonLink';
@@ -49,6 +50,7 @@ export default async function LoginPage({ searchParams }: PageProps<'/dashboard/
           <LoginForm next={typeof next === 'string' ? next : undefined} />
         </Card>
       </div>
+      <VLibras />
     </MainContent>
   );
 }

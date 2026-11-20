@@ -3,8 +3,9 @@ import { expect, type Page } from '@playwright/test';
 
 export const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
-// A marcação interna do VLibras é do widget do governo e não temos como corrigi-la.
-const VLIBRAS_CONTAINER = '[data-vlibras]';
+// A marcação interna do VLibras é do widget do governo e não temos como corrigi-la; o botão que o
+// abre é conferido à parte em vlibras.spec.ts (nome acessível e foco pelo teclado).
+const VLIBRAS_ELEMENTS = ['#vlibras-access-wrapper', '#vlibras-app-root'] as const;
 
 export type Preferences = {
   theme: 'light' | 'dark';
@@ -40,10 +41,9 @@ async function waitForFiniteAnimations(page: Page) {
 
 export async function expectNoAxeViolations(page: Page) {
   await waitForFiniteAnimations(page);
-  const results = await new AxeBuilder({ page })
-    .withTags(WCAG_TAGS)
-    .exclude(VLIBRAS_CONTAINER)
-    .analyze();
+  const builder = new AxeBuilder({ page }).withTags(WCAG_TAGS);
+  for (const selector of VLIBRAS_ELEMENTS) builder.exclude(selector);
+  const results = await builder.analyze();
   const summary = results.violations.map((violation) => ({
     rule: violation.id,
     impact: violation.impact,

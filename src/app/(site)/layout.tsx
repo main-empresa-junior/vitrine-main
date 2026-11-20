@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { VLibras } from '@/components/accessibility/VLibras';
 import { OrbiCorner } from '@/components/mascot/OrbiCorner';
 import { CssStarfield } from '@/components/site/CssStarfield';
 import { SiteFooter } from '@/components/site/SiteFooter';
@@ -16,6 +17,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         {children}
         <SiteFooter />
         <OrbiCorner />
+        <VLibras />
       </ToastProvider>
     </div>
   );
