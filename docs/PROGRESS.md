@@ -94,3 +94,24 @@
 - Gerar as texturas leva alguns segundos com muitos planetas; se pesar, reduzir a resolução ou
   movê-las para um Web Worker.
 - Auditoria completa com leitor de tela e em 768/1024 px ainda não foi feita.
+
+## Universo sem projetos (concluída)
+
+- `SpaceBackground`: céu único (três camadas de estrelas, Via Láctea, nebulosa nas cores da marca,
+  cometa ocasional e rotação lenta) usado por todas as cenas através de `SpaceCanvas`. O antigo
+  `Starfield` foi removido.
+- `SpaceBackdrop`: céu de tela cheia com a câmera flutuando (`CameraDrift`), usado na página do
+  projeto (por baixo da cor da paleta) e no login. Sem WebGL, `CssStarfield` (utilitário
+  `bg-starfield`).
+- `lib/showcase-state.ts` (`empty` | `populated`, rascunhos não contam), com testes; a página inicial
+  escolhe entre `EmptyUniverse` e a vitrine normal.
+- Cena vazia: `Sun` sozinho, `OrbitRing` com `isDashed`, `GhostPlanet` pulsando, Orbi com luneta
+  (`OrbiFigure hasSpyglass` + ação `scout`), mensagem, "Fale com a Main" e "Cadastrar o primeiro
+  projeto" só após `getClaims()` no navegador (a página continua estática).
+- `EmptyOrbitIllustration` (tokens semânticos, funciona nos dois temas) no painel vazio
+  (`EmptyProjectList`) e na cena vazia sem WebGL; `FirstProjectLink` compartilhado.
+- `ShowcaseProject` ganhou `published`; o tipo `DashboardProject` deixou de existir.
+- Verificado no navegador em 1440 e 390 px: cena vazia (rota temporária, removida), vitrine com o
+  projeto publicado, página do projeto, login e ilustração clara e escura.
+- Não verificado: o caminho sem WebGL na prática e o botão de cadastro com sessão real.
+- Em desenvolvimento, a cena leva alguns segundos para aparecer (geração de texturas).
