@@ -12,7 +12,8 @@ import {
   type CameraPose,
   overviewPose,
   quadraticBezier,
-  smoothstep,
+  smootherstep,
+  smootherstepSpeed,
   systemCenter,
 } from '@/lib/orbits';
 
@@ -115,7 +116,9 @@ export function animateTravel(
 ): boolean {
   const fraction = Math.min(1, (now - plan.startedAt) / plan.durationMs);
   const turn = plan.isReturn ? TURN_FRACTION : 0;
-  const pathT = smoothstep((fraction - turn - 0.04) / (0.9 - turn));
+  const pathProgress = (fraction - turn - 0.04) / (0.9 - turn);
+  const pathT = smootherstep(pathProgress);
+  const speed = smootherstepSpeed(pathProgress);
   const rocketPosition = bezier(plan, pathT);
   const ahead = bezier(plan, Math.min(1, pathT + 0.01));
 
@@ -125,11 +128,11 @@ export function animateTravel(
   initialRotation.copy(helper.quaternion);
   helper.lookAt(ahead);
   headingRotation.copy(helper.quaternion);
-  const turnProgress = plan.isReturn ? smoothstep(fraction / turn) : 1;
+  const turnProgress = plan.isReturn ? smootherstep(fraction / turn) : 1;
   rig.rocket.quaternion.copy(initialRotation).slerp(headingRotation, turnProgress);
   rig.rocket.visible = fraction < 0.97;
   if (!reducedMotion) rig.rocketBody.rotation.y += delta * 1.2;
-  const thrust = fraction < turn ? 0.35 : 1 + (1 - Math.abs(pathT - 0.5) * 2) * 1.6;
+  const thrust = 0.35 + speed * 2.25;
   const pulse = 0.85 + Math.sin(elapsedSeconds * 40) * 0.15;
   rig.flame.scale.set(pulse, thrust, pulse);
 
@@ -142,8 +145,8 @@ export function animateTravel(
     .addScaledVector(direction, -6.5)
     .addScaledVector(side, plan.isReturn ? -3.2 : 3.2)
     .add(new Vector3(0, 2.2, 0));
-  const enter = smoothstep(fraction / 0.14);
-  const leave = smoothstep((fraction - 0.86) / 0.14);
+  const enter = smootherstep(fraction / 0.14);
+  const leave = smootherstep((fraction - 0.86) / 0.14);
   rig.camera.position
     .copy(plan.leaveFrom)
     .lerp(chase, enter)
@@ -154,12 +157,8 @@ export function animateTravel(
     .lerp(toVector(plan.arrival.lookAt), leave);
   rig.camera.lookAt(rig.lookAt);
 
-  const warp = reducedMotion
-    ? 0
-    : Math.max(
-        0,
-        Math.sin(Math.min(1, Math.max(0, (fraction - turn - 0.08) / (0.8 - turn))) * Math.PI),
-      );
+  // Campo de visão e linhas de velocidade seguem a velocidade do foguete: entram e saem junto com ela.
+  const warp = reducedMotion ? 0 : speed;
   rig.camera.fov = BASE_FOV + warp * WARP_FOV;
   rig.speedLinesMaterial.opacity = warp * 0.7;
   rig.speedLines.position.copy(rig.camera.position);

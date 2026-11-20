@@ -63,6 +63,18 @@ export function smoothstep(t: number): number {
   return clamped * clamped * (3 - 2 * clamped);
 }
 
+// Curva quíntica: velocidade e aceleração zero nas pontas, sem tranco na partida nem na chegada.
+export function smootherstep(t: number): number {
+  const clamped = Math.min(1, Math.max(0, t));
+  return clamped ** 3 * (clamped * (clamped * 6 - 15) + 10);
+}
+
+// Velocidade relativa da smootherstep (1 no pico, no meio do caminho).
+export function smootherstepSpeed(t: number): number {
+  const clamped = Math.min(1, Math.max(0, t));
+  return 16 * clamped * clamped * (1 - clamped) * (1 - clamped);
+}
+
 export function lerpVec(a: Vec3, b: Vec3, t: number): Vec3 {
   return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 }

@@ -6,8 +6,10 @@ import type { Group, LineBasicMaterial, LineSegments, PerspectiveCamera } from '
 import { Vector3 } from 'three';
 
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { damp, MOTION } from '@/lib/motion';
 import {
   type CameraPose,
+  lerpVec,
   NARROW_SCREEN_WIDTH,
   nearestStop,
   overviewPose,
@@ -15,6 +17,7 @@ import {
   planetPose,
   planetRadius,
   poseBetween,
+  smoothstep,
   systemCenter,
 } from '@/lib/orbits';
 
@@ -142,16 +145,34 @@ export function CameraRig({
     const stop = Math.min(lastIndex, Math.floor(current));
     const nextStop = Math.min(lastIndex, stop + 1);
     const fraction = current - stop;
+    const center = systemCenter(state.orbitIndex);
     const pose = poseBetween(
-      systemCenter(state.orbitIndex),
+      center,
       stopPose(orbit, state.orbitIndex, stop, time, isNarrow),
       stopPose(orbit, state.orbitIndex, nextStop, time, isNarrow),
       fraction,
     );
-    camera.position.set(...pose.position);
-    lookAtRef.current.set(...pose.lookAt);
+    // Ao sair da seção, a câmera recua para uma visão geral mais afastada do sistema.
+    const exit = reducedMotion ? 0 : smoothstep(state.exitProgress);
+    const overview = overviewPose(center, isNarrow);
+    const pulledBack = lerpVec(center, overview.position, 1 + MOTION.exitPullBack);
+    const targetPosition = lerpVec(pose.position, pulledBack, exit);
+    const targetLookAt = lerpVec(pose.lookAt, overview.lookAt, exit);
+    const targetFov =
+      BASE_FOV + (reducedMotion ? 0 : Math.sin(fraction * Math.PI) * STOP_FOV_BUMP * (1 - exit));
+    const smoothing = reducedMotion ? 0 : MOTION.cameraSmoothing;
+    camera.position.set(
+      damp(camera.position.x, targetPosition[0], smoothing, delta),
+      damp(camera.position.y, targetPosition[1], smoothing, delta),
+      damp(camera.position.z, targetPosition[2], smoothing, delta),
+    );
+    lookAtRef.current.set(
+      damp(lookAtRef.current.x, targetLookAt[0], smoothing, delta),
+      damp(lookAtRef.current.y, targetLookAt[1], smoothing, delta),
+      damp(lookAtRef.current.z, targetLookAt[2], smoothing, delta),
+    );
     camera.lookAt(lookAtRef.current);
-    camera.fov = BASE_FOV + (reducedMotion ? 0 : Math.sin(fraction * Math.PI) * STOP_FOV_BUMP);
+    camera.fov = damp(camera.fov, targetFov, smoothing, delta);
     camera.updateProjectionMatrix();
     hideTravelProps(rig);
 

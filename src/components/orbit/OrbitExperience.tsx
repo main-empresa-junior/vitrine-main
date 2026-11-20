@@ -5,9 +5,10 @@ import dynamic from 'next/dynamic';
 
 import type { ShowcaseProject } from '@/features/projects/model';
 import { useIsVisible } from '@/hooks/useIsVisible';
+import { useLastValue } from '@/hooks/useLastValue';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useSupportsWebGL } from '@/hooks/useSupportsWebGL';
-import { fadeClasses } from '@/lib/motion';
+import { fadeClasses, MOTION } from '@/lib/motion';
 import { splitIntoOrbits } from '@/lib/orbits';
 import { cn } from '@/lib/utils/cn';
 
@@ -39,17 +40,35 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   const [orbitIndex, setOrbitIndex] = useState(0);
   const [activeStop, setActiveStop] = useState<number | null>(0);
   const [travel, setTravel] = useState<Travel | null>(null);
-  const journeyRef = useRef<JourneyState>({ orbitIndex: 0, progressTarget: 0, travel: null });
+  const journeyRef = useRef<JourneyState>({
+    orbitIndex: 0,
+    progressTarget: 0,
+    exitProgress: 0,
+    travel: null,
+  });
   const sectionRef = useRef<HTMLElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
+  const dimRef = useRef<HTMLDivElement>(null);
   // Única fonte de verdade: a cena e toda a interface da órbita aparecem e somem juntas.
   const isOrbitActive = useIsVisible(sectionRef, ORBIT_ACTIVE_MARGIN);
   const reducedMotion = useReducedMotion();
   const hasWebGL = useSupportsWebGL();
 
   const orbit = orbits[orbitIndex] ?? [];
+  const activeProject = activeStop !== null && activeStop > 0 ? orbit[activeStop - 1] : undefined;
+  const sheetProject = useLastValue(activeProject, (project) => project.id);
   const lastStop = orbit.length;
-  const scrollToStop = useJourneyScroll(sectionRef, journeyRef, lastStop, reducedMotion);
+  // Escurece a cena aos poucos enquanto a seção sai da tela.
+  const handleExitChange = useCallback((exitProgress: number) => {
+    if (dimRef.current) dimRef.current.style.opacity = String(exitProgress * MOTION.exitDim);
+  }, []);
+  const scrollToStop = useJourneyScroll(
+    sectionRef,
+    journeyRef,
+    lastStop,
+    reducedMotion,
+    handleExitChange,
+  );
 
   useEffect(() => {
     if (!travel) return;
@@ -102,7 +121,6 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
     );
   }
 
-  const activeProject = activeStop !== null && activeStop > 0 ? orbit[activeStop - 1] : undefined;
   const notice: Notice | null = travel
     ? {
         title: `${travel.to < travel.from ? 'Voltando à' : 'Rumo à'} órbita ${travel.to + 1}`,
@@ -127,6 +145,11 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
         onStopChange={setActiveStop}
         onTravelEnd={handleTravelEnd}
       />
+      <div
+        ref={dimRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-1 bg-space-950 opacity-0"
+      />
       <div className="sticky top-0 h-dvh overflow-hidden">
         <JourneyIntro ref={introRef} />
         <div
@@ -135,12 +158,13 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
         >
           <div
             aria-live="polite"
+            inert={!activeProject}
             className={cn(
               'absolute inset-x-4 bottom-24 sm:right-auto sm:left-12 sm:w-md md:top-1/2 md:bottom-auto md:-translate-y-1/2 lg:left-24',
               fadeClasses(Boolean(activeProject)),
             )}
           >
-            {activeProject && <ProjectSheet project={activeProject} className="bg-space-950/60" />}
+            {sheetProject && <ProjectSheet project={sheetProject} className="bg-space-950/60" />}
           </div>
           <TravelNotice notice={notice} />
           <StopTrail

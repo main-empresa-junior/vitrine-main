@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { FadeIn } from '@/components/ui/FadeIn';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { PROJECT_TYPES, type ProjectType } from '@/features/projects/constants';
 import type { ShowcaseProject } from '@/features/projects/model';
@@ -33,39 +34,41 @@ export function AllProjects({ projects }: AllProjectsProps) {
       aria-labelledby="all-projects-title"
       className="scroll-mt-24 px-5 pt-48 pb-28 sm:px-12 lg:px-24"
     >
-      <SectionTitle id="all-projects-title">Todos os projetos</SectionTitle>
-      <p className="mt-3 max-w-prose text-lead text-muted">
-        Para quem quer achar um projeto sem viajar pelas órbitas.
-      </p>
-      <div role="group" aria-label="Filtrar por tipo" className="mt-8 flex flex-wrap gap-2">
-        {FILTERS.map((option) => (
-          <button
-            key={option}
-            type="button"
-            aria-pressed={filter === option}
-            onClick={() => setFilter(option)}
-            className={cn(
-              'min-h-11 rounded-full border-2 px-5 font-semibold transition duration-200',
-              filter === option
-                ? 'border-foreground bg-foreground text-space-900'
-                : 'border-border hover:border-focus',
-            )}
-          >
-            {FILTER_LABELS[option]}
-          </button>
-        ))}
-      </div>
-      {visible.length === 0 ? (
-        <p className="mt-8 text-muted">Nenhum projeto desse tipo ainda.</p>
-      ) : (
-        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((project) => (
-            <li key={project.id}>
-              <ProjectCard project={project} />
-            </li>
+      <FadeIn>
+        <SectionTitle id="all-projects-title">Todos os projetos</SectionTitle>
+        <p className="mt-3 max-w-prose text-lead text-muted">
+          Para quem quer achar um projeto sem viajar pelas órbitas.
+        </p>
+        <div role="group" aria-label="Filtrar por tipo" className="mt-8 flex flex-wrap gap-2">
+          {FILTERS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={filter === option}
+              onClick={() => setFilter(option)}
+              className={cn(
+                'min-h-11 rounded-full border-2 px-5 font-semibold transition duration-200',
+                filter === option
+                  ? 'border-foreground bg-foreground text-space-900'
+                  : 'border-border hover:border-focus',
+              )}
+            >
+              {FILTER_LABELS[option]}
+            </button>
           ))}
-        </ul>
-      )}
+        </div>
+        {visible.length === 0 ? (
+          <p className="mt-8 text-muted">Nenhum projeto desse tipo ainda.</p>
+        ) : (
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((project) => (
+              <li key={project.id}>
+                <ProjectCard project={project} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </FadeIn>
     </section>
   );
 }

@@ -9,6 +9,8 @@ export type Travel = {
 export type JourneyState = {
   orbitIndex: number;
   progressTarget: number;
+  // 0 com a seção da órbita ocupando a tela, 1 quando ela já saiu (cena escondida).
+  exitProgress: number;
   travel: Travel | null;
 };
 

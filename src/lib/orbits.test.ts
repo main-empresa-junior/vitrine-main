@@ -9,6 +9,8 @@ import {
   planetRadius,
   poseBetween,
   quadraticBezier,
+  smootherstep,
+  smootherstepSpeed,
   splitIntoOrbits,
   systemCenter,
 } from './orbits';
@@ -86,5 +88,23 @@ describe('nearestStop', () => {
     expect(nearestStop(2.05)).toBe(2);
     expect(nearestStop(1.5)).toBeNull();
     expect(nearestStop(0)).toBe(0);
+  });
+});
+
+describe('smootherstep', () => {
+  it('starts and ends at rest', () => {
+    expect(smootherstep(0)).toBe(0);
+    expect(smootherstep(1)).toBe(1);
+    expect(smootherstepSpeed(0)).toBe(0);
+    expect(smootherstepSpeed(1)).toBe(0);
+    expect(smootherstepSpeed(0.5)).toBeCloseTo(1, 6);
+  });
+
+  it('is monotonic', () => {
+    let previous = -1;
+    for (let t = 0; t <= 1; t += 0.05) {
+      expect(smootherstep(t)).toBeGreaterThanOrEqual(previous);
+      previous = smootherstep(t);
+    }
   });
 });

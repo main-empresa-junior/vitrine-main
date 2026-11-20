@@ -2,8 +2,12 @@
 
 import { type RefObject, useEffect, useState } from 'react';
 
-export function useIsVisible(ref: RefObject<Element | null>, rootMargin = '0px'): boolean {
-  const [isVisible, setIsVisible] = useState(false);
+export function useIsVisible(
+  ref: RefObject<Element | null>,
+  rootMargin = '0px',
+  initiallyVisible = false,
+): boolean {
+  const [isVisible, setIsVisible] = useState(initiallyVisible);
 
   useEffect(() => {
     const element = ref.current;

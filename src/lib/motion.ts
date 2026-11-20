@@ -7,7 +7,7 @@ export const MOTION = {
   // Recuo da câmera ao sair da seção da órbita, em múltiplos da visão geral.
   exitPullBack: 0.6,
   // Escurecimento máximo da cena ao sair da seção da órbita.
-  exitDim: 0.45,
+  exitDim: 0.35,
 } as const;
 
 // Transições curtas de interface: esmaecimento com um deslocamento pequeno, que some no modo reduzido.
