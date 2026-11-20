@@ -1,35 +1,27 @@
-import { forwardRef, type InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, Ref } from 'react';
+
+import { cn } from '@/lib/utils/cn';
+
+import { Field, FIELD_CONTROL_CLASSES, fieldDescriptionIds } from './Field';
 
 type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   id: string;
   label: string;
   error?: string;
+  hint?: string;
+  ref?: Ref<HTMLInputElement>;
 };
 
-export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  { id, label, error, className = '', ...props },
-  ref,
-) {
-  const errorId = `${id}-error`;
-
+export function TextField({ id, label, error, hint, className, ...props }: TextFieldProps) {
   return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-small font-semibold">
-        {label}
-      </label>
+    <Field id={id} label={label} error={error} hint={hint}>
       <input
-        ref={ref}
         id={id}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? errorId : undefined}
-        className={`h-12 rounded-field border border-border bg-surface px-4 text-body text-foreground ${className}`}
+        aria-describedby={fieldDescriptionIds(id, error, hint)}
+        className={cn(FIELD_CONTROL_CLASSES, 'h-12', className)}
         {...props}
       />
-      {error && (
-        <p id={errorId} className="text-small text-danger-300 dark:text-danger-300">
-          {error}
-        </p>
-      )}
-    </div>
+    </Field>
   );
-});
+}

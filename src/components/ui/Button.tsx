@@ -1,21 +1,37 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, Ref } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary';
+import { buttonClasses, type ButtonSize, type ButtonVariant } from './button-styles';
+import { Spinner } from './Spinner';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
+  size?: ButtonSize;
+  isLoading?: boolean;
+  loadingLabel?: string;
+  ref?: Ref<HTMLButtonElement>;
 };
 
-const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-brand-gradient text-white',
-  secondary: 'border border-border text-foreground hover:border-focus',
-};
-
-export function Button({ variant = 'primary', className = '', ...props }: ButtonProps) {
+export function Button({
+  variant,
+  size,
+  isLoading = false,
+  loadingLabel,
+  className,
+  disabled,
+  children,
+  type = 'button',
+  ...props
+}: ButtonProps) {
   return (
     <button
-      className={`inline-flex min-h-12 items-center justify-center rounded-full px-6 text-body font-bold transition-colors duration-200 disabled:opacity-60 ${variantClasses[variant]} ${className}`}
+      type={type}
+      className={buttonClasses({ variant, size, className })}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       {...props}
-    />
+    >
+      {isLoading && <Spinner />}
+      {isLoading && loadingLabel ? loadingLabel : children}
+    </button>
   );
 }

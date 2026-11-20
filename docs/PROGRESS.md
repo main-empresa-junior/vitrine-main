@@ -9,6 +9,18 @@
 - `@types/node` alinhado ao Node 22; Next.js 16.4.3 → 16.4.6 (correções de segurança em `use cache`).
 - Painel marcado com `instant = false`: toda página depende da sessão.
 
+## Etapa 1 — tokens, tema e componentes base (concluída)
+
+- `globals.css`: tokens semânticos novos (`surface-strong`, `danger`, `success`, `overlay`), tema
+  claro também em `[data-theme='light']`, variantes `motion-safe`/`motion-reduce` ligadas a
+  `data-motion`.
+- Script no `<head>` (`PREFERENCES_SCRIPT`) sempre define `data-motion` e aplica o tema salvo.
+- Hooks `useReducedMotion`, `useHtmlAttribute`, `useHasMounted`.
+- `components/ui`: `Button` (+ `buttonClasses` para links), `Field`, `TextField`, `TextArea`,
+  `Select`, `Checkbox`, `FieldError`, `Card`, `Badge`, `Tag`, `Icon`, `Spinner`, `Dialog`
+  (`<dialog>` nativo com `showModal`), `Toast` + `ToastProvider`, `ThemeToggle`, `MotionToggle`.
+- Página inicial padrão do Next substituída por um marcador em `(site)`, com tema escuro.
+
 ## Próximo
 
-Etapa 1: tokens, tema e componentes base.
+Etapa 2: Supabase e autenticação.
