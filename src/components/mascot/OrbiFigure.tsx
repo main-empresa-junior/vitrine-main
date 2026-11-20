@@ -9,8 +9,14 @@ const VISOR_LIGHT = '#1D2766';
 const VISOR_DARK = '#070A22';
 const PANEL = '#0A0F33';
 
+const SPYGLASS = '#C9D2EE';
+
+type OrbiFigureProps = {
+  hasSpyglass?: boolean;
+};
+
 // Astronauta com capacete em hexágono, como o logo da Main.
-export function OrbiFigure() {
+export function OrbiFigure({ hasSpyglass = false }: OrbiFigureProps) {
   const id = useId();
   const rim = `${id}-rim`;
   const visor = `${id}-visor`;
@@ -97,6 +103,13 @@ export function OrbiFigure() {
         strokeLinecap="round"
       />
       <circle cx="52" cy="-8" r="3.5" fill={brandColors.magenta} />
+      {hasSpyglass && (
+        <g className="orbi-spyglass" transform="rotate(-24 64 38)">
+          <rect x="60" y="33" width="40" height="10" rx="3" fill={SPYGLASS} />
+          <rect x="56" y="34.5" width="6" height="7" rx="1.5" fill={PANEL} />
+          <rect x="96" y="31" width="8" height="14" rx="2" fill={brandColors.violet} />
+        </g>
+      )}
     </svg>
   );
 }

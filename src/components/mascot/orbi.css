@@ -107,6 +107,14 @@
   animation: orbi-wave 0.45s ease-in-out infinite alternate;
 }
 
+/* Procurar o primeiro planeta com a luneta, olhando ao redor */
+.orbi.scout {
+  animation: orbi-scout 7s ease-in-out infinite;
+}
+.orbi.scout .orbi-arm-right {
+  transform: rotate(-140deg);
+}
+
 [data-motion='reduced'] .orbi,
 [data-motion='reduced'] .orbi *,
 [data-motion='reduced'] .orbi-help {
@@ -321,5 +329,20 @@
   }
   95% {
     transform: scaleY(0.1);
+  }
+}
+@keyframes orbi-scout {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-12deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(10deg);
   }
 }
