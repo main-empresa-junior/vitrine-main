@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/Button';
 import { buttonClasses } from '@/components/ui/button-styles';
 import { Icon } from '@/components/ui/Icon';
 import { PROJECT_TYPE_LABELS } from '@/features/projects/constants';
-import type { DashboardProject } from '@/features/projects/model';
+import type { ShowcaseProject } from '@/features/projects/model';
 import type { MoveDirection } from '@/features/projects/ordering';
 
 import { ReorderButtons } from './ReorderButtons';
 
 type ProjectRowProps = {
-  project: DashboardProject;
+  project: ShowcaseProject;
   canMoveUp: boolean;
   canMoveDown: boolean;
   isBusy: boolean;

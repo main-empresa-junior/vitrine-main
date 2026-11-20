@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/server';
 
 import { PROJECTS_CACHE_TAG } from './constants';
 import {
-  type DashboardProject,
   type ProjectDetails,
   type ProjectRowWithChildren,
   type ShowcaseProject,
@@ -57,7 +56,7 @@ export async function getPublishedProject(slug: string): Promise<ProjectDetails 
   return data ? toProjectDetails(sortChildren(data)) : null;
 }
 
-export async function getDashboardProjects(): Promise<DashboardProject[]> {
+export async function getDashboardProjects(): Promise<ShowcaseProject[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('projects')
@@ -65,7 +64,7 @@ export async function getDashboardProjects(): Promise<DashboardProject[]> {
     .order('position')
     .order('created_at');
   if (error) throw error;
-  return data.map((row) => ({ ...toShowcaseProject(row), published: row.published }));
+  return data.map(toShowcaseProject);
 }
 
 export async function getProjectForEditing(id: string): Promise<ProjectRowWithChildren | null> {

@@ -31,6 +31,7 @@ export type ShowcaseProject = {
   palette: PlanetPalette;
   texture: PlanetTextureKind;
   hasRing: boolean;
+  published: boolean;
   seed: number;
 };
 
@@ -39,10 +40,6 @@ export type ProjectDetails = ShowcaseProject & {
   developers: readonly string[];
   features: readonly FeatureRow[];
   images: readonly ImageRow[];
-};
-
-export type DashboardProject = ShowcaseProject & {
-  published: boolean;
 };
 
 export function toShowcaseProject(row: ProjectRow): ShowcaseProject {
@@ -62,6 +59,7 @@ export function toShowcaseProject(row: ProjectRow): ShowcaseProject {
     },
     texture: row.texture,
     hasRing: row.has_ring,
+    published: row.published,
     seed: seedFromText(row.id),
   };
 }

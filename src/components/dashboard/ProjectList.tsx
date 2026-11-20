@@ -12,18 +12,18 @@ import {
   moveProject,
   setProjectPublished,
 } from '@/features/projects/actions';
-import type { DashboardProject } from '@/features/projects/model';
+import type { ShowcaseProject } from '@/features/projects/model';
 import { normalizeForSearch } from '@/lib/utils/text';
 
 import { ProjectRow } from './ProjectRow';
 
 type ProjectListProps = {
-  projects: readonly DashboardProject[];
+  projects: readonly ShowcaseProject[];
 };
 
 export function ProjectList({ projects }: ProjectListProps) {
   const [query, setQuery] = useState('');
-  const [pendingDelete, setPendingDelete] = useState<DashboardProject | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<ShowcaseProject | null>(null);
   const [isPending, startTransition] = useTransition();
   const showToast = useToast();
 
