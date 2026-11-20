@@ -51,8 +51,8 @@ export function contrastRatio(a: string, b: string): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-const DARK_TEXT = '#0A0F33';
-const LIGHT_TEXT = '#FFFFFF';
+export const DARK_TEXT = '#0A0F33';
+export const LIGHT_TEXT = '#FFFFFF';
 
 export function readableTextColor(background: string): string {
   return contrastRatio(background, DARK_TEXT) >= contrastRatio(background, LIGHT_TEXT)
@@ -73,4 +73,38 @@ export function projectPageBackground(projectBackground: string): string {
     if (contrastRatio(candidate, PAGE_TEXT) >= PAGE_MIN_CONTRAST) return candidate;
   }
   return PAGE_BASE;
+}
+
+export type Hsl = readonly [hue: number, saturation: number, lightness: number];
+
+export function hslToHex([hue, saturation, lightness]: Hsl): string {
+  const s = clamp(saturation, 0, 100) / 100;
+  const l = clamp(lightness, 0, 100) / 100;
+  const h = ((hue % 360) + 360) % 360;
+  const chroma = (1 - Math.abs(2 * l - 1)) * s;
+  const x = chroma * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - chroma / 2;
+  const sector = Math.floor(h / 60);
+  const [r, g, b] = [
+    [chroma, x, 0],
+    [x, chroma, 0],
+    [0, chroma, x],
+    [0, x, chroma],
+    [x, 0, chroma],
+    [chroma, 0, x],
+  ][sector];
+  return rgbToHex([(r + m) * 255, (g + m) * 255, (b + m) * 255]);
+}
+
+export function hexToHsl(hex: string): Hsl {
+  const [r, g, b] = hexToRgb(hex).map((channel) => channel / 255);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const lightness = (max + min) / 2;
+  const delta = max - min;
+  if (delta === 0) return [0, 0, lightness * 100];
+  const saturation = delta / (1 - Math.abs(2 * lightness - 1));
+  const hue =
+    max === r ? ((g - b) / delta) % 6 : max === g ? (b - r) / delta + 2 : (r - g) / delta + 4;
+  return [(hue * 60 + 360) % 360, saturation * 100, lightness * 100];
 }
