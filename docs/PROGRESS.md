@@ -144,3 +144,40 @@
 - Verificado no navegador (rotas temporárias, removidas): céu contínuo com projetos e vazio, 1440 e
   390 px, âncora `/#sobre` com o título visível, sugestão, desfazer e o diálogo de descarte.
 - Não verificado com sessão real: o redirecionamento após salvar e o aviso na lista.
+
+## Transições, bugs da órbita, carrossel, publicação completa, enquadramento e carregamento (concluída)
+
+- **Bugs 2 e 3 (mesma causa):** a interface da órbita fica no palco `sticky` e aparecia sempre que
+  um pedaço dele estava na tela, enquanto a cena só aparecia com o fim da seção abaixo de 60% da
+  altura. Chegando por `#todos`/`#sobre` e voltando pela rolagem, o controle de órbitas era a
+  primeira coisa a entrar na tela; o clique iniciava a viagem fora da tela e travava a rolagem.
+  Agora há uma única fonte de verdade (`isOrbitActive`, IntersectionObserver) para a cena e toda a
+  interface, que fica `inert` e esmaecida quando inativa, e a viagem encaixa a parada atual na
+  tela antes de travar a rolagem. Testes em `e2e/orbit-navigation.spec.ts`.
+- **Playwright:** `npm run test:e2e` roda contra um build de produção (`E2E_BASE_URL` aponta para
+  um servidor já aberto). Fica fora do CI porque precisa de projetos publicados no banco (cenário
+  `duas-orbitas` ou `misto` da branch `test-data`).
+- **Transições:** câmera com amortecimento exponencial (`damp` em `lib/motion.ts`, testado),
+  viagem com curva quíntica e campo de visão e linhas de velocidade seguindo a velocidade do
+  foguete, recuo da câmera e escurecimento da cena ao sair da seção, esmaecimentos na ficha, avisos
+  e seções de baixo. Constantes em `MOTION` e `fadeClasses`.
+- **Carrossel:** `components/ui/Carousel` (scroll-snap, botões, "1 a 4 de 15", setas do teclado,
+  rótulos para leitor de tela) em "Todos os projetos" e no painel (Publicados e Rascunhos). O
+  `ProjectCard` ganhou o espaço de ações do painel; reordenar troca com o vizinho do mesmo grupo.
+- **Publicação completa:** `projectDraftSchema` e `projectPublishSchema` derivados da mesma base,
+  usados no navegador e nas Server Actions. Limites: nome 40, resumo 160, descrição 1200, título
+  de funcionalidade 60, descrição de funcionalidade 200 (os textos atuais cabem e o layout da ficha
+  e da página comporta esses tamanhos). A migração `20261121000000` passou para rascunho os
+  projetos publicados incompletos `sss`, `ssss`, `teste` e `teste-1`, e o banco agora recusa
+  publicados sem cliente, resumo, descrição, tecnologias ou desenvolvedores. Funcionalidades
+  (mínimo 3) e telas (mínimo 1) são conferidas na Server Action, inclusive ao publicar pela lista.
+  O formulário lista o que falta com links para cada campo e mostra contadores de caracteres. A
+  página do projeto tem estrutura fixa; projeto publicado incompleto registra o erro e mostra a
+  página de erro, e o build só pré-renderiza os completos.
+- **Enquadramento:** `lib/planet-framing.ts` (testado) calcula a distância pela esfera que envolve
+  planeta e anel, campo de visão e proporção do quadro; usado no palco compartilhado.
+- **Carregamento:** `ProgressBar` (topo e em linha), barra global em toda navegação interna,
+  `WaitingScreen` nos `loading.tsx` com o Orbi segurando a placa (pose `sign`), que aparece por
+  CSS após 700 ms e fica pelo menos 400 ms (`WaitingLinger`).
+- Pendente: os projetos de teste antigos ficaram incompletos para as regras novas; rode de novo o
+  cenário na `test-data` (o seed foi atualizado).
