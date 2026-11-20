@@ -1,26 +1,140 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Dark mode is controlled by data-theme, not by the OS, so each area can choose its theme. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ---------- Primitive tokens ---------- */
+@theme {
+  /* Only our palette is available: no stray Tailwind colors like blue-500 */
+  --color-*: initial;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Brand, taken from the Main logo */
+  --color-brand-cyan: #00cfc1;
+  --color-brand-violet: #7b61d9;
+  --color-brand-magenta: #e30bbf;
+  --color-brand-aurora: #3bf0a0;
+  --color-brand-glow: #7cf3e6;
+
+  /* Space: night sky and dark surfaces */
+  --color-space-950: #03040c;
+  --color-space-900: #05071c;
+  --color-space-800: #0a0f33;
+  --color-space-700: #121a4e;
+
+  /* Day: light sky and light surfaces */
+  --color-day-50: #f7fafc;
+  --color-day-100: #f3f8fb;
+  --color-day-200: #e8edf1;
+  --color-day-300: #d5e2ec;
+  --color-day-400: #c5d4e0;
+
+  /* Ink: text on light backgrounds */
+  --color-ink-900: #14183a;
+  --color-ink-700: #39406b;
+  --color-ink-500: #4a5280;
+
+  /* Mist: text on dark backgrounds */
+  --color-mist-100: #eef1ff;
+  --color-mist-300: #b9c2ee;
+  --color-mist-500: #9aa5d8;
+
+  /* Feedback */
+  --color-danger-300: #fda4b4;
+  --color-danger-500: #e5484d;
+  --color-success-500: #2fbf8f;
+
+  /* Type scale: only these sizes exist */
+  --text-*: initial;
+  --text-display: clamp(2.5rem, 6vw, 5rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.035em;
+  --text-title: clamp(1.875rem, 3.4vw, 2.75rem);
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: -0.02em;
+  --text-heading: 1.5rem;
+  --text-heading--line-height: 1.2;
+  --text-lead: 1.1875rem;
+  --text-lead--line-height: 1.5;
+  --text-body: 1rem;
+  --text-body--line-height: 1.55;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.45;
+
+  /* Shape */
+  --radius-field: 0.875rem;
+  --radius-card: 1.5rem;
+  --radius-panel: 1.75rem;
+
+  /* Depth */
+  --shadow-card: 0 20px 50px rgb(20 24 58 / 0.18);
+  --shadow-glow: 0 0 40px rgb(124 243 230 / 0.35);
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.2, 1.3, 0.4, 1);
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
+/* ---------- Semantic tokens: the role of each color, switching with the theme ---------- */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-focus: var(--focus);
+
+  --font-display: var(--font-unbounded), 'Segoe UI', sans-serif;
+  --font-sans: var(--font-figtree), 'Segoe UI', system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: var(--color-day-100);
+  --foreground: var(--color-ink-900);
+  --muted: var(--color-ink-500);
+  --surface: var(--color-white);
+  --border: var(--color-day-300);
+  --focus: var(--color-brand-violet);
+}
+
+[data-theme='dark'] {
+  --background: var(--color-space-900);
+  --foreground: var(--color-mist-100);
+  --muted: var(--color-mist-300);
+  --surface: rgb(10 15 51 / 0.8);
+  --border: rgb(255 255 255 / 0.16);
+  --focus: var(--color-brand-glow);
+}
+
+/* ---------- Shared utilities ---------- */
+@utility bg-brand-gradient {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-brand-cyan),
+    var(--color-brand-violet) 55%,
+    var(--color-brand-magenta)
+  );
+}
+
+/* ---------- Base styles ---------- */
+@layer base {
+  body {
+    @apply bg-background font-sans text-body text-foreground antialiased;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
