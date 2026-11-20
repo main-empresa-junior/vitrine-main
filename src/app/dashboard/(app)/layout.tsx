@@ -1,12 +1,10 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 
-import { GuardedLink } from '@/components/dashboard/GuardedLink';
+import { DashboardHeaderItems } from '@/components/dashboard/DashboardHeaderItems';
 import { UnsavedChangesProvider } from '@/components/dashboard/UnsavedChangesProvider';
-import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { signOut } from '@/features/auth/actions';
+import { MobileMenu } from '@/components/ui/MobileMenu';
 import { requireTeamMember } from '@/features/auth/session';
 
 export default async function DashboardAppLayout({ children }: { children: ReactNode }) {
@@ -21,18 +19,12 @@ export default async function DashboardAppLayout({ children }: { children: React
               <Logo variant="onLight" className="h-10 dark:hidden" />
               <Logo variant="onDark" className="hidden h-10 dark:block" />
             </Link>
-            <div className="flex items-center gap-3">
-              <p className="hidden text-small text-muted sm:block">{member.email}</p>
-              <GuardedLink href="/#sobre" variant="secondary" size="sm">
-                Voltar ao site
-              </GuardedLink>
-              <ThemeToggle />
-              <form action={signOut}>
-                <Button type="submit" variant="secondary" size="sm">
-                  Sair
-                </Button>
-              </form>
-            </div>
+            <nav aria-label="Painel">
+              <DashboardHeaderItems email={member.email} placement="bar" />
+              <MobileMenu>
+                <DashboardHeaderItems email={member.email} placement="menu" />
+              </MobileMenu>
+            </nav>
           </div>
         </header>
         <div className="mx-auto max-w-7xl px-5 py-8">{children}</div>

@@ -11,7 +11,11 @@ import {
 
 import { Button } from './Button';
 
-export function MotionToggle() {
+type MotionToggleProps = {
+  className?: string;
+};
+
+export function MotionToggle({ className }: MotionToggleProps) {
   const hasMounted = useHasMounted();
   const isReduced = useReducedMotion();
 
@@ -28,7 +32,7 @@ export function MotionToggle() {
   }
 
   return (
-    <Button variant="secondary" size="sm" onClick={toggle}>
+    <Button variant="secondary" size="sm" onClick={toggle} className={className}>
       {isReduced ? 'Ativar animações' : 'Reduzir animações'}
     </Button>
   );

@@ -1,0 +1,39 @@
+/* Diálogo modal aberto: a página atrás não rola. */
+:root:has(dialog:modal) {
+  overflow: hidden;
+}
+
+/* Painel lateral: entra e sai pela direita, com o fundo escurecendo junto. */
+.dialog-sheet,
+.dialog-sheet::backdrop {
+  transition:
+    translate 250ms var(--ease-out-soft),
+    opacity 250ms var(--ease-out-soft),
+    overlay 250ms allow-discrete,
+    display 250ms allow-discrete;
+}
+.dialog-sheet {
+  translate: 100% 0;
+}
+.dialog-sheet[open] {
+  translate: 0 0;
+}
+.dialog-sheet::backdrop {
+  opacity: 0;
+}
+.dialog-sheet[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .dialog-sheet[open] {
+    translate: 100% 0;
+  }
+  .dialog-sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+[data-motion='reduced'] .dialog-sheet,
+[data-motion='reduced'] .dialog-sheet::backdrop {
+  transition: none;
+}
