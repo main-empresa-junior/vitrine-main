@@ -35,6 +35,7 @@ export function LoginForm({ next }: LoginFormProps) {
       <TextField
         id="email"
         label="E-mail"
+        requirement="always"
         type="email"
         autoComplete="email"
         error={errors.email?.message}
@@ -43,6 +44,7 @@ export function LoginForm({ next }: LoginFormProps) {
       <TextField
         id="password"
         label="Senha"
+        requirement="always"
         type="password"
         autoComplete="current-password"
         error={errors.password?.message}

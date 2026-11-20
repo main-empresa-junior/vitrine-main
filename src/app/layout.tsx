@@ -5,6 +5,7 @@ import Script from 'next/script';
 
 import { WaitingLinger } from '@/components/mascot/WaitingLinger';
 import { NavigationProgress } from '@/components/site/NavigationProgress';
+import { SkipLink } from '@/components/ui/SkipLink';
 import { PREFERENCES_SCRIPT } from '@/lib/preferences';
 import { SITE_URL } from '@/lib/site';
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <body>
+        <SkipLink />
         <Script id="preferences" strategy="beforeInteractive">
           {PREFERENCES_SCRIPT}
         </Script>

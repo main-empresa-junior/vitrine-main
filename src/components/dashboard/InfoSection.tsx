@@ -42,6 +42,7 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
         maxLength={TEXT_LIMITS.name}
         count={{ value: name.length, max: TEXT_LIMITS.name }}
         label="Nome"
+        requirement="always"
         error={errors.name?.message}
         {...register('name', {
           onChange: (event: { target: { value: string } }) => {
@@ -52,6 +53,7 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
       <TextField
         id="slug"
         label="Endereço"
+        requirement="always"
         hint="Aparece em /projects/endereço. Gerado do nome; pode ser editado."
         error={errors.slug?.message}
         {...register('slug', { onChange: () => setIsSlugLocked(true) })}
@@ -60,6 +62,7 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
         <TextField
           id="client"
           label="Cliente"
+          requirement="publish"
           error={errors.client?.message}
           {...register('client')}
         />
@@ -84,6 +87,7 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
         maxLength={TEXT_LIMITS.summary}
         count={{ value: summary.length, max: TEXT_LIMITS.summary }}
         label="Resumo"
+        requirement="publish"
         hint="Uma linha sobre o que o projeto faz."
         error={errors.summary?.message}
         {...register('summary')}
@@ -93,6 +97,7 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
         maxLength={TEXT_LIMITS.description}
         count={{ value: description.length, max: TEXT_LIMITS.description }}
         label="Descrição"
+        requirement="publish"
         rows={6}
         error={errors.description?.message}
         {...register('description')}

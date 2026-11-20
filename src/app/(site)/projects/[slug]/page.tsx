@@ -7,6 +7,7 @@ import { ProjectFacts } from '@/components/project/ProjectFacts';
 import { ProjectFeatures } from '@/components/project/ProjectFeatures';
 import { ProjectGallery } from '@/components/project/ProjectGallery';
 import { ProjectHero } from '@/components/project/ProjectHero';
+import { MainContent } from '@/components/ui/MainContent';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { detailsToFormValues, type ProjectDetails } from '@/features/projects/model';
 import { getPublishedProject, getPublishedProjects } from '@/features/projects/queries';
@@ -64,7 +65,7 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
   const paragraphs = project.description.split(/\n\s*\n/).filter(Boolean);
 
   return (
-    <main className="relative px-5 pb-24 sm:px-12 lg:px-24">
+    <MainContent className="relative px-5 pb-24 sm:px-12 lg:px-24">
       <SpaceBackdrop />
       <div
         aria-hidden="true"
@@ -92,6 +93,6 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
         <ProjectGallery images={project.images} projectName={project.name} />
         {nextProject && <NextProjectLink project={nextProject} />}
       </div>
-    </main>
+    </MainContent>
   );
 }

@@ -3,6 +3,7 @@ import { connection } from 'next/server';
 
 import { PageHeading } from '@/components/dashboard/PageHeading';
 import { ProjectEditor } from '@/components/dashboard/ProjectEditor';
+import { MainContent } from '@/components/ui/MainContent';
 import { suggestionToPlanetFields } from '@/features/projects/planet-fields';
 import type { ProjectFormValues } from '@/features/projects/schema';
 import { suggestPlanet } from '@/lib/planet-suggestion';
@@ -30,9 +31,9 @@ export default async function NewProjectPage() {
   const initialValues = { ...EMPTY_PROJECT, ...suggestionToPlanetFields(suggestPlanet()) };
 
   return (
-    <main className="flex flex-col gap-8">
+    <MainContent className="flex flex-col gap-8">
       <PageHeading title="Novo projeto" />
       <ProjectEditor initialValues={initialValues} />
-    </main>
+    </MainContent>
   );
 }

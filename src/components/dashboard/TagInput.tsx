@@ -49,7 +49,7 @@ export function TagInput({
   }
 
   return (
-    <Field id={id} label={label} hint={hint} error={error}>
+    <Field id={id} label={label} hint={hint} error={error} requirement="publish">
       {values.length > 0 && (
         <ul className="flex flex-wrap gap-2" aria-label={label}>
           {values.map((value) => (

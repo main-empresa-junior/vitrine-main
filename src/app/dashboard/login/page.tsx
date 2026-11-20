@@ -7,6 +7,7 @@ import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
+import { MainContent } from '@/components/ui/MainContent';
 
 import { LoginForm } from './LoginForm';
 
@@ -22,7 +23,7 @@ export default async function LoginPage({ searchParams }: PageProps<'/dashboard/
   const { next } = await searchParams;
 
   return (
-    <main
+    <MainContent
       data-theme="dark"
       className="relative flex min-h-dvh items-center justify-center px-5 py-10"
     >
@@ -48,6 +49,6 @@ export default async function LoginPage({ searchParams }: PageProps<'/dashboard/
           <LoginForm next={typeof next === 'string' ? next : undefined} />
         </Card>
       </div>
-    </main>
+    </MainContent>
   );
 }

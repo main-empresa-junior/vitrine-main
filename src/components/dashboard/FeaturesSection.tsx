@@ -53,6 +53,7 @@ export function FeaturesSection() {
                     max: TEXT_LIMITS.featureTitle,
                   }}
                   label="Título"
+                  requirement="always"
                   error={errors.features?.[index]?.title?.message}
                   {...register(`features.${index}.title`)}
                 />
@@ -64,6 +65,7 @@ export function FeaturesSection() {
                     max: TEXT_LIMITS.featureDescription,
                   }}
                   label="Descrição"
+                  requirement="publish"
                   rows={2}
                   error={errors.features?.[index]?.description?.message}
                   {...register(`features.${index}.description`)}

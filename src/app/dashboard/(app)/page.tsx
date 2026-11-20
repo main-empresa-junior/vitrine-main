@@ -4,6 +4,7 @@ import { ProjectList } from '@/components/dashboard/ProjectList';
 import { SavedNotice } from '@/components/dashboard/SavedNotice';
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Icon } from '@/components/ui/Icon';
+import { MainContent } from '@/components/ui/MainContent';
 import { getDashboardProjects } from '@/features/projects/queries';
 
 export const metadata: Metadata = { title: 'Projetos' };
@@ -12,7 +13,7 @@ export default async function DashboardPage() {
   const projects = await getDashboardProjects();
 
   return (
-    <main className="flex flex-col gap-8">
+    <MainContent className="flex flex-col gap-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-title">Projetos</h1>
@@ -28,6 +29,6 @@ export default async function DashboardPage() {
       </div>
       <ProjectList projects={projects} />
       <SavedNotice />
-    </main>
+    </MainContent>
   );
 }

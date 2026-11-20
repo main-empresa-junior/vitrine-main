@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import { PageHeading } from '@/components/dashboard/PageHeading';
 import { ProjectEditor } from '@/components/dashboard/ProjectEditor';
+import { MainContent } from '@/components/ui/MainContent';
 import { toFormValues } from '@/features/projects/model';
 import { getProjectForEditing } from '@/features/projects/queries';
 
@@ -16,9 +17,9 @@ export default async function EditProjectPage({ params }: PageProps<'/dashboard/
   if (!project) notFound();
 
   return (
-    <main className="flex flex-col gap-8">
+    <MainContent className="flex flex-col gap-8">
       <PageHeading title={`Editar ${project.name}`} />
       <ProjectEditor projectId={project.id} initialValues={toFormValues(project)} />
-    </main>
+    </MainContent>
   );
 }

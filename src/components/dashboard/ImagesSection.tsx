@@ -69,6 +69,7 @@ export function ImagesSection() {
                 <TextField
                   id={`images-${index}-alt`}
                   label={`Texto alternativo da tela ${index + 1}`}
+                  requirement="always"
                   error={errors.images?.[index]?.alt?.message}
                   {...register(`images.${index}.alt`)}
                 />
