@@ -210,3 +210,24 @@
   foco em "Todos os projetos"; contato e Esc devolvendo o foco ao "?"). Conferido no navegador em
   1440 e 390 px (folha de baixo no celular) e com animações reduzidas.
 - Próximo: textos reais das respostas do chat, de "Sobre a Main" e de contato.
+
+## Chat no lugar do Orbi e menu de celular (concluída)
+
+- **Chat:** enquanto o chat está aberto, o "?" e o Orbi grande saem do canto (200 ms,
+  `CHAT_TIMING.cornerSwapMs`) e ficam `inert` e `aria-hidden`; o painel ocupa o canto. O cabeçalho
+  do painel tem um Orbi pequeno que conversa (`talking`), aponta quando a resposta chega
+  (`pointing`) e pisca nos redirecionamentos (`wink`), o mesmo `OrbiFigure` do canto e dos
+  avatares. O X se chama "Fechar conversa"; ao fechar, o foco volta ao "?" depois que ele
+  reaparece. Redirecionamentos para âncoras da home fecham o chat, trazem o Orbi de volta e focam o
+  título da seção.
+- **Menu de celular:** `MobileMenu` (botão de três linhas que vira X, "Abrir menu"/"Fechar menu")
+  abre o `Dialog` na nova variante `sheet` (painel lateral modal, entra pela direita, sem animação
+  no modo reduzido). Qualquer diálogo modal aberto trava a rolagem da página (`dialog.css`). Os
+  itens de cada cabeçalho estão numa lista de dados renderizada na barra e no menu
+  (`SiteHeaderItems`, `DashboardHeaderItems`); o cabeçalho público ganhou o link "Contato"
+  (`/#contato`). Ponto de quebra no token `--breakpoint-nav` (64rem): em 768 px os itens do site
+  não cabem lado a lado quando "Ativar animações" aparece, então tablets também usam o menu.
+- **Menu e chat:** `useOverlay` guarda qual sobreposição está aberta; abrir uma fecha a outra.
+- **Testes:** `e2e/orbi-chat.spec.ts` (canto escondido e de volta, X, Esc, redirecionamento) e
+  `e2e/mobile-menu.spec.ts` (390 px: todas as opções, foco, link para seção, Esc, menu fecha o
+  chat). O menu do painel foi conferido numa rota temporária, sem sessão real.
