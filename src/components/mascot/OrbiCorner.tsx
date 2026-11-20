@@ -3,8 +3,9 @@
 import { type AnimationEvent, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-import type { OrbiMood } from '@/components/assistant/useOrbiChat';
+import { useOverlay } from '@/hooks/useOverlay';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { CHAT_TIMING } from '@/lib/motion';
 import { cn } from '@/lib/utils/cn';
 
 import { type OrbiAction, pickNextAction } from './orbi-actions';
@@ -26,8 +27,7 @@ export function OrbiCorner() {
   const reducedMotion = useReducedMotion();
   const [action, setAction] = useState<OrbiAction | null>(null);
   const [isAttentive, setIsAttentive] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [mood, setMood] = useState<OrbiMood>('talking');
+  const [isChatOpen, setIsChatOpen] = useOverlay('chat');
   const lastActionRef = useRef<OrbiAction | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const helpButtonRef = useRef<HTMLButtonElement>(null);
@@ -50,13 +50,11 @@ export function OrbiCorner() {
   useEffect(() => {
     if (!isChatOpen) return;
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return;
-      setIsChatOpen(false);
-      helpButtonRef.current?.focus();
+      if (event.key === 'Escape') closeChat();
     }
     document.addEventListener('keydown', closeOnEscape);
     return () => document.removeEventListener('keydown', closeOnEscape);
-  }, [isChatOpen]);
+  });
 
   function handleAnimationEnd(event: AnimationEvent<HTMLDivElement>) {
     if (event.target !== event.currentTarget || !action) return;
@@ -74,69 +72,84 @@ export function OrbiCorner() {
     setIsAttentive(false);
   }
 
-  function toggleChat() {
+  function openChat() {
     clearTimeout(timerRef.current);
     setAction(null);
-    setMood('talking');
-    setIsChatOpen((isOpen) => !isOpen);
+    setIsAttentive(false);
+    setIsChatOpen(true);
   }
 
   function closeChat() {
     setIsChatOpen(false);
-    helpButtonRef.current?.focus();
+    // O foco só volta ao "?" depois que ele terminou de reaparecer.
+    const delay = reducedMotion ? 0 : CHAT_TIMING.cornerSwapMs;
+    setTimeout(() => helpButtonRef.current?.focus(), delay);
   }
 
   const attentionHandlers = { onPointerEnter: payAttention, onPointerLeave: resumePlaying };
-  const isWaving = isAttentive && !reducedMotion && !isChatOpen;
-  const orbiClasses = isChatOpen
-    ? cn('talking', mood === 'pointing' && 'pointing')
-    : cn(action, isWaving && 'wave');
+  const isWaving = isAttentive && !reducedMotion;
 
   return (
     <>
       <div
+        inert={isChatOpen}
+        aria-hidden={isChatOpen || undefined}
         className={cn(
           'orbi-mascot pointer-events-none fixed right-2 bottom-20 z-40 h-56 w-56 origin-bottom-right scale-75 sm:right-8 sm:bottom-4 sm:scale-100',
-          !isChatOpen && action,
+          action,
         )}
       >
-        <span
-          aria-hidden="true"
+        <div
           className={cn(
-            'absolute top-0 right-0 rounded-field border border-border bg-space-950/90 px-3 py-2 text-small font-semibold whitespace-nowrap text-foreground transition duration-200',
-            isAttentive && !isChatOpen ? 'opacity-100' : 'translate-y-1.5 opacity-0',
+            'absolute inset-0 origin-bottom-right transition duration-200 ease-out-soft motion-reduce:transition-none',
+            isChatOpen && 'translate-y-4 scale-90 opacity-0',
           )}
         >
-          Dúvidas? Fale com o Orbi
-        </span>
-        <div
-          {...attentionHandlers}
-          onAnimationEnd={handleAnimationEnd}
-          className={cn('orbi pointer-events-auto absolute bottom-0 left-4 z-10 w-24', orbiClasses)}
-        >
-          <OrbiFigure pose={isChatOpen && mood === 'wink' ? 'wink' : 'default'} />
+          <span
+            aria-hidden="true"
+            className={cn(
+              'absolute top-0 right-0 rounded-field border border-border bg-space-950/90 px-3 py-2 text-small font-semibold whitespace-nowrap text-foreground transition duration-200',
+              isAttentive ? 'opacity-100' : 'translate-y-1.5 opacity-0',
+            )}
+          >
+            Dúvidas? Fale com o Orbi
+          </span>
+          <div
+            {...attentionHandlers}
+            onAnimationEnd={handleAnimationEnd}
+            className={cn(
+              'orbi absolute bottom-0 left-4 z-10 w-24',
+              !isChatOpen && 'pointer-events-auto',
+              action,
+              isWaving && 'wave',
+            )}
+          >
+            <OrbiFigure />
+          </div>
+          <button
+            ref={helpButtonRef}
+            type="button"
+            {...attentionHandlers}
+            onFocus={payAttention}
+            onBlur={resumePlaying}
+            onClick={openChat}
+            aria-expanded={isChatOpen}
+            aria-controls={isChatOpen ? CHAT_ID : undefined}
+            aria-label="Tirar uma dúvida com o Orbi"
+            className={cn(
+              'orbi-help absolute bottom-3.5 left-32 z-20 flex size-14 items-center justify-center rounded-full bg-brand-gradient font-display text-heading font-bold text-white shadow-glow transition duration-200 hover:scale-110 focus-visible:scale-110',
+              !isChatOpen && 'pointer-events-auto',
+            )}
+          >
+            ?
+          </button>
         </div>
-        <button
-          ref={helpButtonRef}
-          type="button"
-          {...attentionHandlers}
-          onFocus={payAttention}
-          onBlur={resumePlaying}
-          onClick={toggleChat}
-          aria-expanded={isChatOpen}
-          aria-controls={isChatOpen ? CHAT_ID : undefined}
-          aria-label="Tirar uma dúvida com o Orbi"
-          className="orbi-help pointer-events-auto absolute bottom-3.5 left-32 z-20 flex size-14 items-center justify-center rounded-full bg-brand-gradient font-display text-heading font-bold text-white shadow-glow transition duration-200 hover:scale-110 focus-visible:scale-110"
-        >
-          ?
-        </button>
       </div>
       {isChatOpen && (
         <ChatPanel
           id={CHAT_ID}
           onClose={closeChat}
           onLeaveForSection={() => setIsChatOpen(false)}
-          onMoodChange={setMood}
         />
       )}
     </>

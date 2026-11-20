@@ -1,16 +1,19 @@
 'use client';
 
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
+import { OrbiFigure } from '@/components/mascot/OrbiFigure';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { cn } from '@/lib/utils/cn';
 
 import { ChatMessageItem } from './ChatMessageItem';
 import { QuickReplies } from './QuickReplies';
 import { TypingIndicator } from './TypingIndicator';
 import { type OrbiMood, useOrbiChat } from './useOrbiChat';
 
+import '@/components/mascot/orbi.css';
 import './chat.css';
 
 const CHAT_TITLE = 'Converse com o Orbi';
@@ -20,16 +23,16 @@ type ChatPanelProps = {
   id: string;
   onClose: () => void;
   onLeaveForSection: () => void;
-  onMoodChange: (mood: OrbiMood) => void;
 };
 
-export function ChatPanel({ id, onClose, onLeaveForSection, onMoodChange }: ChatPanelProps) {
+export function ChatPanel({ id, onClose, onLeaveForSection }: ChatPanelProps) {
   const titleId = useId();
   const isReducedMotion = useReducedMotion();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLOListElement>(null);
   const firstReplyRef = useRef<HTMLButtonElement>(null);
-  const chat = useOrbiChat({ isReducedMotion, onMoodChange, onLeaveForSection });
+  const [mood, setMood] = useState<OrbiMood>('talking');
+  const chat = useOrbiChat({ isReducedMotion, onMoodChange: setMood, onLeaveForSection });
   const { messages, pendingQuestionId } = chat.state;
 
   useEffect(() => {
@@ -54,14 +57,17 @@ export function ChatPanel({ id, onClose, onLeaveForSection, onMoodChange }: Chat
       aria-labelledby={titleId}
       className="orbi-chat z-50 flex flex-col rounded-t-panel border border-border bg-background text-foreground shadow-card sm:rounded-panel"
     >
-      <header className="flex items-center gap-2 border-b border-border py-2 ps-5 pe-2">
+      <header className="flex items-center gap-3 border-b border-border py-2 ps-4 pe-2">
+        <div className={cn('orbi talking w-8 shrink-0', mood === 'pointing' && 'pointing')}>
+          <OrbiFigure pose={mood === 'wink' ? 'wink' : 'default'} />
+        </div>
         <h2 id={titleId} className="flex-1 font-display text-body font-bold">
           {CHAT_TITLE}
         </h2>
         <Button
           size="sm"
           variant="ghost"
-          aria-label="Fechar chat"
+          aria-label="Fechar conversa"
           onClick={onClose}
           className="px-0"
         >

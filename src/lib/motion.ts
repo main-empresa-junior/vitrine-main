@@ -18,6 +18,8 @@ export const CHAT_TIMING = {
   pointingMs: 900,
   redirectMs: 800,
   reducedRedirectMs: 300,
+  // Saída e volta do Orbi grande e do "?" quando o chat abre e fecha.
+  cornerSwapMs: 200,
 } as const;
 
 // Transições curtas de interface: esmaecimento com um deslocamento pequeno, que some no modo reduzido.

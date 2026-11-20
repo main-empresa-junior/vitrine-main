@@ -9,13 +9,13 @@
   animation: orbi-chat-open 200ms var(--ease-out-soft);
 }
 
-/* No computador fica ancorado acima do Orbi, à direita. */
+/* No computador ocupa o canto do Orbi, que se esconde enquanto o chat está aberto. */
 @media (min-width: 40rem) {
   .orbi-chat {
     inset-inline: auto 2rem;
-    bottom: 15rem;
+    bottom: 1rem;
     width: 22.5rem;
-    max-height: min(70dvh, calc(100dvh - 17rem));
+    max-height: min(70dvh, calc(100dvh - 6rem));
     padding-bottom: 0;
   }
 }
