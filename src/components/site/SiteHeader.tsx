@@ -11,7 +11,7 @@ const NAV_LINKS = [
 
 export function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-4 bg-linear-to-b from-space-950/70 to-transparent px-5 py-4 sm:px-12">
+    <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-4 bg-space-950/85 px-5 py-3 backdrop-blur-md sm:bg-transparent sm:bg-linear-to-b sm:from-space-950/70 sm:to-transparent sm:px-12 sm:py-4 sm:backdrop-blur-none">
       <Link href="/" className="rounded-field">
         <Logo variant="onDark" priority />
       </Link>
