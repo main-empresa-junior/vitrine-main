@@ -10,6 +10,12 @@ export const MOTION = {
   exitDim: 0.35,
 } as const;
 
+// Modo reduzido: em vez de deslocar, a cena e os painéis esmaecem. Mesmo valor de --duration-reduced.
+export const REDUCED_MOTION = {
+  fadeMs: 200,
+  holdMs: 120,
+} as const;
+
 // Tempos do chat com o Orbi, em milissegundos.
 export const CHAT_TIMING = {
   typingMsPerChar: 8,

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 const START_VALUE = 0.12;
 const TRICKLE_LIMIT = 0.9;
@@ -24,7 +23,6 @@ function isInternalNavigation(event: MouseEvent): boolean {
 
 export function NavigationProgress() {
   const pathname = usePathname();
-  const reducedMotion = useReducedMotion();
   const [value, setValue] = useState<number | null>(null);
   const [startedFrom, setStartedFrom] = useState<string | null>(null);
   const [lastPathname, setLastPathname] = useState(pathname);
@@ -49,14 +47,15 @@ export function NavigationProgress() {
   }, []);
 
   useEffect(() => {
-    if (startedFrom === null || reducedMotion) return;
+    // No modo reduzido a barra também avança, mas aos saltos: a largura não tem transição.
+    if (startedFrom === null) return;
     const timer = setInterval(() => {
       setValue((current) =>
         current === null ? null : current + (TRICKLE_LIMIT - current) * TRICKLE_SHARE,
       );
     }, TRICKLE_INTERVAL_MS);
     return () => clearInterval(timer);
-  }, [startedFrom, reducedMotion]);
+  }, [startedFrom]);
 
   useEffect(() => {
     if (value !== 1) return;

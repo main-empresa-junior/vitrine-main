@@ -18,6 +18,8 @@ export type JourneyCallbacks = {
   onProgress: (progress: number) => void;
   onStopChange: (stop: number | null) => void;
   onTravelEnd: (orbitIndex: number) => void;
+  // Opacidade do véu escuro do modo reduzido, de 0 a 1.
+  onVeilChange: (opacity: number) => void;
 };
 
 export type Orbit = readonly ShowcaseProject[];

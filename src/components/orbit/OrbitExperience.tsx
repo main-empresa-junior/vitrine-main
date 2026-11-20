@@ -49,6 +49,7 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const dimRef = useRef<HTMLDivElement>(null);
+  const veilRef = useRef<HTMLDivElement>(null);
   // Única fonte de verdade: a cena e toda a interface da órbita aparecem e somem juntas.
   const isOrbitActive = useIsVisible(sectionRef, ORBIT_ACTIVE_MARGIN);
   const reducedMotion = useReducedMotion();
@@ -61,6 +62,9 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   // Escurece a cena aos poucos enquanto a seção sai da tela.
   const handleExitChange = useCallback((exitProgress: number) => {
     if (dimRef.current) dimRef.current.style.opacity = String(exitProgress * MOTION.exitDim);
+  }, []);
+  const handleVeilChange = useCallback((opacity: number) => {
+    if (veilRef.current) veilRef.current.style.opacity = String(opacity);
   }, []);
   const scrollToStop = useJourneyScroll(
     sectionRef,
@@ -123,7 +127,9 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
 
   const notice: Notice | null = travel
     ? {
-        title: `${travel.to < travel.from ? 'Voltando à' : 'Rumo à'} órbita ${travel.to + 1}`,
+        title: reducedMotion
+          ? `Chegando à órbita ${travel.to + 1}`
+          : `${travel.to < travel.from ? 'Voltando à' : 'Rumo à'} órbita ${travel.to + 1}`,
         text: `${projectCountLabel(orbits[travel.to].length)} ${travel.to < travel.from ? 'por lá' : 'para conhecer'}`,
       }
     : orbitIndex > 0 && activeStop === 0
@@ -144,9 +150,16 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
         onProgress={handleProgress}
         onStopChange={setActiveStop}
         onTravelEnd={handleTravelEnd}
+        onVeilChange={handleVeilChange}
       />
       <div
         ref={dimRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-1 bg-space-950 opacity-0"
+      />
+      <div
+        ref={veilRef}
+        data-scene-veil
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 -z-1 bg-space-950 opacity-0"
       />
@@ -168,7 +181,13 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
               fadeClasses(Boolean(activeProject)),
             )}
           >
-            {sheetProject && <ProjectSheet project={sheetProject} className="bg-space-950/60" />}
+            {sheetProject && (
+              <ProjectSheet
+                key={sheetProject.id}
+                project={sheetProject}
+                className="animate-appear bg-space-950/60"
+              />
+            )}
           </div>
           <TravelNotice notice={notice} />
           <StopTrail

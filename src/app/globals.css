@@ -73,11 +73,14 @@
 
   --ease-spring: cubic-bezier(0.2, 1.3, 0.4, 1);
   --ease-out-soft: cubic-bezier(0.2, 0.7, 0.3, 1);
+  /* Curva dos esmaecimentos do modo reduzido. */
+  --ease-reduced: cubic-bezier(0.4, 0, 0.2, 1);
 
   --animate-beckon: beckon 1.6s ease-in-out infinite;
   --animate-progress-slide: progress-slide 1.4s var(--ease-out-soft) infinite;
   /* A tela do Orbi só aparece se a espera passar de 700 ms (o mesmo valor de waiting-store.ts). */
   --animate-appear-late: appear 300ms var(--ease-out-soft) 700ms both;
+  --animate-appear: appear 200ms var(--ease-out-soft) both;
 
   @keyframes appear {
     from {
@@ -213,13 +216,30 @@
     outline-offset: 3px;
   }
 
-  /* No modo reduzido só sobram transições curtas disparadas pela pessoa, como fades. */
+  :root {
+    /* Duração dos esmaecimentos do modo reduzido; o mesmo valor de REDUCED_MOTION em lib/motion.ts. */
+    --duration-reduced: 200ms;
+  }
+
+  /*
+   * Modo reduzido: nada desliza, cresce, gira ou fica em laço. Transformações mudam de uma vez e
+   * as mudanças de opacidade e cor viram esmaecimentos curtos, para não haver cortes secos.
+   */
   [data-motion='reduced'] *,
   [data-motion='reduced'] *::before,
   [data-motion='reduced'] *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 120ms !important;
+    transition-property:
+      opacity, color, background-color, border-color, outline-color, fill, stroke, box-shadow !important;
+    transition-duration: var(--duration-reduced) !important;
+    transition-timing-function: var(--ease-reduced) !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Entradas que já são só de opacidade continuam esmaecendo. */
+  [data-motion='reduced'] .animate-appear,
+  [data-motion='reduced'] .animate-appear-late {
+    animation-duration: var(--duration-reduced) !important;
   }
 }

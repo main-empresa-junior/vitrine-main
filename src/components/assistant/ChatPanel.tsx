@@ -21,11 +21,12 @@ const SCROLL_MARGIN_PX = 16;
 
 type ChatPanelProps = {
   id: string;
+  isLeaving: boolean;
   onClose: () => void;
   onLeaveForSection: () => void;
 };
 
-export function ChatPanel({ id, onClose, onLeaveForSection }: ChatPanelProps) {
+export function ChatPanel({ id, isLeaving, onClose, onLeaveForSection }: ChatPanelProps) {
   const titleId = useId();
   const isReducedMotion = useReducedMotion();
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -55,7 +56,11 @@ export function ChatPanel({ id, onClose, onLeaveForSection }: ChatPanelProps) {
       id={id}
       role="dialog"
       aria-labelledby={titleId}
-      className="orbi-chat z-50 flex flex-col rounded-t-panel border border-border bg-background text-foreground shadow-card sm:rounded-panel"
+      inert={isLeaving}
+      className={cn(
+        'orbi-chat z-50 flex flex-col rounded-t-panel border border-border bg-background text-foreground shadow-card transition-opacity duration-200 sm:rounded-panel',
+        isLeaving && 'opacity-0',
+      )}
     >
       <header className="flex items-center gap-3 border-b border-border py-2 ps-4 pe-2">
         <div className={cn('orbi talking w-8 shrink-0', mood === 'pointing' && 'pointing')}>

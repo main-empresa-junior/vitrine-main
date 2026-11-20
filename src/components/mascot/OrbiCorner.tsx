@@ -28,6 +28,7 @@ export function OrbiCorner() {
   const [action, setAction] = useState<OrbiAction | null>(null);
   const [isAttentive, setIsAttentive] = useState(false);
   const [isChatOpen, setIsChatOpen] = useOverlay('chat');
+  const [isPanelMounted, setIsPanelMounted] = useState(false);
   const lastActionRef = useRef<OrbiAction | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const helpButtonRef = useRef<HTMLButtonElement>(null);
@@ -46,6 +47,15 @@ export function OrbiCorner() {
     scheduleNext(FIRST_DELAY_MS);
     return () => clearTimeout(timerRef.current);
   }, [reducedMotion, isAttentive, isChatOpen]);
+
+  // O painel continua montado enquanto esmaece ao fechar.
+  if (isChatOpen && !isPanelMounted) setIsPanelMounted(true);
+
+  useEffect(() => {
+    if (isChatOpen || !isPanelMounted) return;
+    const timer = setTimeout(() => setIsPanelMounted(false), CHAT_TIMING.cornerSwapMs);
+    return () => clearTimeout(timer);
+  }, [isChatOpen, isPanelMounted]);
 
   useEffect(() => {
     if (!isChatOpen) return;
@@ -82,8 +92,7 @@ export function OrbiCorner() {
   function closeChat() {
     setIsChatOpen(false);
     // O foco só volta ao "?" depois que ele terminou de reaparecer.
-    const delay = reducedMotion ? 0 : CHAT_TIMING.cornerSwapMs;
-    setTimeout(() => helpButtonRef.current?.focus(), delay);
+    setTimeout(() => helpButtonRef.current?.focus(), CHAT_TIMING.cornerSwapMs);
   }
 
   const attentionHandlers = { onPointerEnter: payAttention, onPointerLeave: resumePlaying };
@@ -101,7 +110,7 @@ export function OrbiCorner() {
       >
         <div
           className={cn(
-            'absolute inset-0 origin-bottom-right transition duration-200 ease-out-soft motion-reduce:transition-none',
+            'absolute inset-0 origin-bottom-right transition duration-200 ease-out-soft',
             isChatOpen && 'translate-y-4 scale-90 opacity-0',
           )}
         >
@@ -145,9 +154,10 @@ export function OrbiCorner() {
           </button>
         </div>
       </div>
-      {isChatOpen && (
+      {isPanelMounted && (
         <ChatPanel
           id={CHAT_ID}
+          isLeaving={!isChatOpen}
           onClose={closeChat}
           onLeaveForSection={() => setIsChatOpen(false)}
         />

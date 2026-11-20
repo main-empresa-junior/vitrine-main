@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils/cn';
 import { Dialog } from './Dialog';
 
 const BAR =
-  'absolute left-0 h-0.5 w-full rounded-full bg-current transition duration-200 ease-out-soft motion-reduce:transition-none';
+  'absolute left-0 h-0.5 w-full rounded-full bg-current transition duration-200 ease-out-soft';
 
 type MobileMenuProps = {
   children: ReactNode;

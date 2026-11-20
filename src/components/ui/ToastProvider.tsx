@@ -5,11 +5,13 @@ import { createContext, type ReactNode, use, useCallback, useMemo, useState } fr
 import { Toast, type ToastTone } from './Toast';
 
 const TOAST_DURATION_MS = 5000;
+const TOAST_FADE_MS = 200;
 
 type ToastItem = {
   id: number;
   message: string;
   tone: ToastTone;
+  isLeaving: boolean;
 };
 
 type ShowToast = (message: string, tone?: ToastTone) => void;
@@ -21,14 +23,20 @@ let nextToastId = 0;
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<readonly ToastItem[]>([]);
 
+  // O aviso esmaece antes de sair da lista.
   const dismiss = useCallback((id: number) => {
-    setToasts((current) => current.filter((toast) => toast.id !== id));
+    setToasts((current) =>
+      current.map((toast) => (toast.id === id ? { ...toast, isLeaving: true } : toast)),
+    );
+    setTimeout(() => {
+      setToasts((current) => current.filter((toast) => toast.id !== id));
+    }, TOAST_FADE_MS);
   }, []);
 
   const show = useCallback<ShowToast>(
     (message, tone = 'info') => {
       const id = nextToastId++;
-      setToasts((current) => [...current, { id, message, tone }]);
+      setToasts((current) => [...current, { id, message, tone, isLeaving: false }]);
       setTimeout(() => dismiss(id), TOAST_DURATION_MS);
     },
     [dismiss],
@@ -49,6 +57,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={toast.id}
             message={toast.message}
             tone={toast.tone}
+            isLeaving={toast.isLeaving}
             onDismiss={() => dismiss(toast.id)}
           />
         ))}

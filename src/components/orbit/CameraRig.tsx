@@ -22,6 +22,7 @@ import {
 } from '@/lib/orbits';
 
 import type { JourneyCallbacks, JourneyState, Orbit } from './journey';
+import { advanceReducedJourney, createReducedJourney } from './reduced-journey';
 import { Rocket } from './Rocket';
 import { SpeedLines } from './SpeedLines';
 import {
@@ -69,6 +70,7 @@ export function CameraRig({
   onProgress,
   onStopChange,
   onTravelEnd,
+  onVeilChange,
 }: CameraRigProps) {
   const reducedMotion = useReducedMotion();
   const rocketRef = useRef<Group>(null);
@@ -80,6 +82,7 @@ export function CameraRig({
   const lookAtRef = useRef(new Vector3());
   const lastStopRef = useRef<number | null>(null);
   const planRef = useRef<TravelPlan | null>(null);
+  const reducedRef = useRef(createReducedJourney());
 
   useFrame(({ clock, camera: frameCamera, size }, rawDelta) => {
     const camera = frameCamera as PerspectiveCamera;
@@ -104,6 +107,44 @@ export function CameraRig({
     const isNarrow = width < NARROW_SCREEN_WIDTH;
     const time = reducedMotion ? 0 : clock.elapsedTime;
     const now = performance.now();
+
+    if (reducedMotion) {
+      const frame = advanceReducedJourney(
+        reducedRef.current,
+        state,
+        (orbits[state.orbitIndex] ?? []).length,
+        now,
+      );
+      onVeilChange(frame.veilOpacity);
+      if (frame.arrivedOrbit !== null) {
+        progressRef.current = 0;
+        onTravelEnd(frame.arrivedOrbit);
+      }
+      const shownStop = reducedRef.current.shownStop ?? 0;
+      const pose = stopPose(
+        orbits[state.orbitIndex] ?? [],
+        state.orbitIndex,
+        shownStop,
+        0,
+        isNarrow,
+      );
+      camera.position.set(...pose.position);
+      lookAtRef.current.set(...pose.lookAt);
+      camera.lookAt(lookAtRef.current);
+      camera.fov = BASE_FOV;
+      camera.updateProjectionMatrix();
+      hideTravelProps(rig);
+      onProgress(shownStop);
+      if (frame.changedStop !== null) {
+        lastStopRef.current = frame.changedStop;
+        onStopChange(frame.changedStop);
+      }
+      return;
+    }
+    if (reducedRef.current.shownStop !== null) {
+      reducedRef.current = createReducedJourney();
+      onVeilChange(0);
+    }
 
     if (state.travel) {
       planRef.current ??= planTravel(
