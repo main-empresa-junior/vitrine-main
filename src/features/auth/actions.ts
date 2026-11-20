@@ -3,9 +3,11 @@
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
-import { type SignInInput, signInSchema } from '@/lib/validation/auth';
 
-const DEFAULT_REDIRECT = '/dashboard';
+import { getSafeDashboardPath } from './safe-redirect';
+import { type SignInInput, signInSchema } from './schema';
+
+const LOGIN_PATH = '/dashboard/login';
 
 export type SignInResult = { error: string } | undefined;
 
@@ -19,14 +21,15 @@ export async function signIn(input: SignInInput, next?: string): Promise<SignInR
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    // Same message for wrong email or wrong password, so attackers can't probe accounts.
+    // Mesma mensagem para e-mail ou senha errados, para não revelar quais contas existem.
     return { error: 'E-mail ou senha incorretos.' };
   }
 
-  redirect(getSafeRedirect(next));
+  redirect(getSafeDashboardPath(next));
 }
 
-function getSafeRedirect(next?: string) {
-  // Only allow internal dashboard paths, to prevent open redirects to other sites.
-  return next?.startsWith('/dashboard') && !next.startsWith('//') ? next : DEFAULT_REDIRECT;
+export async function signOut(): Promise<never> {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect(LOGIN_PATH);
 }

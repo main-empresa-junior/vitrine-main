@@ -1,30 +1,29 @@
 import type { Metadata } from 'next';
 
+import { Card } from '@/components/ui/Card';
+import { Logo } from '@/components/ui/Logo';
+
 import { LoginForm } from './LoginForm';
 
 export const metadata: Metadata = {
-  title: 'Entrar | Painel da Main',
+  title: 'Entrar no painel',
+  robots: { index: false },
 };
 
-type LoginPageProps = {
-  searchParams: Promise<{ next?: string }>;
-};
-
-export default async function LoginPage({ searchParams }: LoginPageProps) {
+export default async function LoginPage({ searchParams }: PageProps<'/dashboard/login'>) {
   const { next } = await searchParams;
 
   return (
-    <main
-      data-theme="dark"
-      className="flex min-h-dvh items-center justify-center bg-background px-5"
-    >
-      <div className="w-full max-w-md rounded-panel border border-border bg-surface p-9 shadow-card">
-        <h1 className="font-display text-title">Área da equipe</h1>
+    <main className="flex min-h-dvh items-center justify-center px-5 py-10">
+      <Card className="w-full max-w-md p-9">
+        <Logo variant="onLight" priority className="dark:hidden" />
+        <Logo variant="onDark" priority className="hidden dark:block" />
+        <h1 className="mt-8 font-display text-title">Área da equipe</h1>
         <p className="mt-2 mb-7 text-muted">
           Entre para cadastrar e editar os projetos da vitrine.
         </p>
-        <LoginForm next={next} />
-      </div>
+        <LoginForm next={typeof next === 'string' ? next : undefined} />
+      </Card>
     </main>
   );
 }

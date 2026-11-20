@@ -6,9 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
-import { type SignInInput, signInSchema } from '@/lib/validation/auth';
-
-import { signIn } from './actions';
+import { signIn } from '@/features/auth/actions';
+import { type SignInInput, signInSchema } from '@/features/auth/schema';
 
 type LoginFormProps = {
   next?: string;
@@ -52,13 +51,13 @@ export function LoginForm({ next }: LoginFormProps) {
       {serverError && (
         <p
           role="alert"
-          className="rounded-field bg-danger-500/15 px-4 py-3 text-small text-danger-300"
+          className="rounded-field border-2 border-danger px-4 py-3 font-semibold text-danger"
         >
           {serverError}
         </p>
       )}
-      <Button type="submit" disabled={isPending}>
-        {isPending ? 'Entrando…' : 'Entrar'}
+      <Button type="submit" isLoading={isPending} loadingLabel="Entrando…">
+        Entrar
       </Button>
     </form>
   );
