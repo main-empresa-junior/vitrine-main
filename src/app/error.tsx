@@ -1,10 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-
 import { StatusScreen } from '@/components/site/StatusScreen';
 import { Button } from '@/components/ui/Button';
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 
 export default function ErrorPage({ retry }: { error: unknown; retry: () => void }) {
   return (
@@ -13,9 +11,9 @@ export default function ErrorPage({ retry }: { error: unknown; retry: () => void
       message="Algo deu errado ao carregar esta página. Tente de novo em instantes."
     >
       <Button onClick={() => retry()}>Tentar de novo</Button>
-      <Link href="/" className={buttonClasses({ variant: 'secondary' })}>
+      <ButtonLink href="/" variant="secondary">
         Voltar para a vitrine
-      </Link>
+      </ButtonLink>
     </StatusScreen>
   );
 }

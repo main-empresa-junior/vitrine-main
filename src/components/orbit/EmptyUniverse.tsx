@@ -1,6 +1,6 @@
 import { OrbiScout } from '@/components/mascot/OrbiScout';
 import { TeamShortcut } from '@/components/site/TeamShortcut';
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { EmptyOrbitIllustration } from '@/components/ui/EmptyOrbitIllustration';
 import { contactMailto } from '@/lib/contact';
 import { type CameraPose, overviewPose } from '@/lib/orbits';
@@ -39,9 +39,7 @@ export function EmptyUniverse() {
           construirmos vai virar um planeta neste sistema.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href={contactMailto()} className={buttonClasses()}>
-            Fale com a Main
-          </a>
+          <ButtonLink href={contactMailto()}>Fale com a Main</ButtonLink>
           <TeamShortcut />
         </div>
       </div>

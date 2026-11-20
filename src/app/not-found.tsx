@@ -1,7 +1,5 @@
-import Link from 'next/link';
-
 import { StatusScreen } from '@/components/site/StatusScreen';
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 
 export default function NotFound() {
   return (
@@ -9,9 +7,7 @@ export default function NotFound() {
       title="Página fora de órbita"
       message="Não encontramos o que você procurava. Talvez o projeto ainda não tenha sido publicado."
     >
-      <Link href="/" className={buttonClasses()}>
-        Voltar para a vitrine
-      </Link>
+      <ButtonLink href="/">Voltar para a vitrine</ButtonLink>
     </StatusScreen>
   );
 }

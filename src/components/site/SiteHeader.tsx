@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Logo } from '@/components/ui/Logo';
 import { MotionToggle } from '@/components/ui/MotionToggle';
 
@@ -26,16 +26,14 @@ export function SiteHeader() {
           </Link>
         ))}
         <MotionToggle />
-        <Link
+        <ButtonLink
           href="/dashboard"
-          className={buttonClasses({
-            variant: 'ghost',
-            size: 'sm',
-            className: 'bg-mist-100 text-space-800 hover:bg-white',
-          })}
+          variant="ghost"
+          size="sm"
+          className="bg-mist-100 text-space-800 hover:bg-white"
         >
           Área da equipe
-        </Link>
+        </ButtonLink>
       </nav>
     </header>
   );

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 import { ProjectList } from '@/components/dashboard/ProjectList';
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Icon } from '@/components/ui/Icon';
 import { getDashboardProjects } from '@/features/projects/queries';
 
@@ -21,10 +20,10 @@ export default async function DashboardPage() {
             órbita.
           </p>
         </div>
-        <Link href="/dashboard/new" className={buttonClasses()}>
+        <ButtonLink href="/dashboard/new">
           <Icon name="plus" />
           Novo projeto
-        </Link>
+        </ButtonLink>
       </div>
       <ProjectList projects={projects} />
     </main>

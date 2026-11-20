@@ -1,7 +1,5 @@
-import Link from 'next/link';
-
 import type { ButtonVariant } from '@/components/ui/button-styles';
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 
 type FirstProjectLinkProps = {
   variant?: ButtonVariant;
@@ -9,8 +7,8 @@ type FirstProjectLinkProps = {
 
 export function FirstProjectLink({ variant = 'primary' }: FirstProjectLinkProps) {
   return (
-    <Link href="/dashboard/new" className={buttonClasses({ variant })}>
+    <ButtonLink href="/dashboard/new" variant={variant}>
       Cadastrar o primeiro projeto
-    </Link>
+    </ButtonLink>
   );
 }

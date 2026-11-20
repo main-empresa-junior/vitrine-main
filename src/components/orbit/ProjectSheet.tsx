@@ -1,6 +1,5 @@
-import Link from 'next/link';
-
 import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { PROJECT_TYPE_LABELS } from '@/features/projects/constants';
 import type { ShowcaseProject } from '@/features/projects/model';
 import { readableTextColor } from '@/lib/color';
@@ -20,7 +19,7 @@ export function ProjectSheet({ project, isLinkEnabled = true, className }: Proje
     backgroundColor: project.palette.primary,
     color: readableTextColor(project.palette.primary),
   };
-  const actionClasses = buttonClasses({ variant: 'ghost', className: 'mt-6 hover:brightness-110' });
+  const actionClass = 'mt-6 hover:brightness-110';
 
   return (
     <article
@@ -54,11 +53,19 @@ export function ProjectSheet({ project, isLinkEnabled = true, className }: Proje
         )}
       </dl>
       {isLinkEnabled ? (
-        <Link href={`/projects/${project.slug}`} className={actionClasses} style={actionStyle}>
+        <ButtonLink
+          href={`/projects/${project.slug}`}
+          variant="ghost"
+          className={actionClass}
+          style={actionStyle}
+        >
           Ver projeto<span className="sr-only"> {project.name}</span>
-        </Link>
+        </ButtonLink>
       ) : (
-        <span className={actionClasses} style={actionStyle}>
+        <span
+          className={buttonClasses({ variant: 'ghost', className: actionClass })}
+          style={actionStyle}
+        >
           Ver projeto
         </span>
       )}

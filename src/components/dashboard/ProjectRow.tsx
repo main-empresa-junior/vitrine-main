@@ -1,9 +1,7 @@
-import Link from 'next/link';
-
 import { PlanetThumbnail } from '@/components/orbit/PlanetThumbnail';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { buttonClasses } from '@/components/ui/button-styles';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Icon } from '@/components/ui/Icon';
 import { PROJECT_TYPE_LABELS } from '@/features/projects/constants';
 import type { ShowcaseProject } from '@/features/projects/model';
@@ -54,13 +52,10 @@ export function ProjectRow({
           <Icon name={project.published ? 'eyeOff' : 'eye'} />
           {project.published ? 'Despublicar' : 'Publicar'}
         </Button>
-        <Link
-          href={`/dashboard/${project.id}/edit`}
-          className={buttonClasses({ variant: 'secondary', size: 'sm' })}
-        >
+        <ButtonLink href={`/dashboard/${project.id}/edit`} variant="secondary" size="sm">
           <Icon name="pencil" />
           Editar<span className="sr-only"> {project.name}</span>
-        </Link>
+        </ButtonLink>
         <Button
           variant="ghost"
           size="sm"
