@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { cn } from '@/lib/utils/cn';
+
 import { Icon } from './Icon';
 
 type TagProps = {
@@ -10,7 +12,12 @@ type TagProps = {
 
 export function Tag({ children, onRemove, removeLabel }: TagProps) {
   return (
-    <span className="inline-flex min-h-8 items-center gap-1 rounded-full bg-surface-strong py-1 ps-3 pe-3 text-small font-semibold text-foreground has-[button]:pe-0">
+    <span
+      className={cn(
+        'inline-flex min-h-8 items-center gap-1 rounded-full bg-surface-strong py-1 ps-3 text-small font-semibold text-foreground',
+        onRemove ? 'pe-0' : 'pe-3',
+      )}
+    >
       {children}
       {onRemove && (
         <button

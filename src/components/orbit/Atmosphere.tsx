@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AdditiveBlending, BackSide, Color } from 'three';
 
-const ATMOSPHERE_SCALE = 1.07;
+const ATMOSPHERE_SCALE = 1.15;
 
 const VERTEX_SHADER = `
 varying vec3 vNormal;
@@ -20,7 +20,7 @@ varying vec3 vNormal;
 varying vec3 vPosition;
 void main() {
   float intensity = pow(clamp(0.68 - dot(vNormal, normalize(-vPosition)), 0.0, 1.0), 2.6);
-  gl_FragColor = vec4(color, 1.0) * intensity * 1.1;
+  gl_FragColor = vec4(color, 1.0) * intensity * 0.85;
 }`;
 
 type AtmosphereProps = {

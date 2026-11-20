@@ -43,6 +43,21 @@
 - `lib/color`, `lib/noise`, `lib/textures` com testes.
 - Não verificado com sessão real: precisa da senha do usuário de teste.
 
+## Etapa 4 — vitrine 3D (concluída)
+
+- `lib/orbits.ts` (divisão em órbitas de 7, posições, paradas da câmera, curva em volta do sol) e
+  `lib/stars.ts`, com testes.
+- `components/orbit`: `OrbitScene`, `SolarSystem`, `Sun` (cor por órbita e farol ao longe),
+  `OrbitingPlanet`, `OrbitRing`, `Starfield`, `Rocket`, `SpeedLines`, `CameraRig` + `travel.ts`
+  (viagem com meia-volta no retorno), `JourneyIntro`, `ProjectSheet`, `StopTrail`, `OrbitSwitcher`,
+  `TravelNotice`, `AllProjects` com filtros e `ProjectCard`.
+- Cabeçalho, "Sobre a Main" e rodapé de contato com marcadores `[…]` até os textos chegarem.
+- Sem WebGL: título e aviso, com a lista "Todos os projetos" logo abaixo.
+- Cena carregada com `dynamic(..., { ssr: false })`, pixel ratio até 2, texturas em cache por
+  projeto, `frameloop` parado quando a seção sai da tela.
+- Verificado no navegador com dados fictícios (rota temporária, já removida): visão geral, parada no
+  planeta com ficha, e viagem para a órbita 2.
+
 ## Próximo
 
-Etapa 4: vitrine 3D.
+Etapa 5: página do projeto.

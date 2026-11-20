@@ -1,7 +1,16 @@
-export default function HomePage() {
+import { AllProjects } from '@/components/orbit/AllProjects';
+import { OrbitExperience } from '@/components/orbit/OrbitExperience';
+import { AboutSection } from '@/components/site/AboutSection';
+import { getPublishedProjects } from '@/features/projects/queries';
+
+export default async function HomePage() {
+  const projects = await getPublishedProjects();
+
   return (
-    <main className="flex min-h-dvh items-center px-6">
-      <h1 className="font-display text-display">Projetos em órbita</h1>
+    <main>
+      <OrbitExperience projects={projects} />
+      <AllProjects projects={projects} />
+      <AboutSection />
     </main>
   );
 }
