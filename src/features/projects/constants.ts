@@ -41,3 +41,10 @@ export const ACCEPTED_IMAGE_TYPES = [
   'image/webp',
   'image/avif',
 ] as const;
+
+export const TEXTURE_DESCRIPTIONS: Record<PlanetTextureKind, string> = {
+  gas: 'gasoso',
+  rocky: 'rochoso',
+  earth: 'parecido com a Terra',
+  ice: 'gelado',
+};

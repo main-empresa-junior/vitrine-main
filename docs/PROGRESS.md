@@ -115,3 +115,32 @@
   projeto publicado, página do projeto, login e ilustração clara e escura.
 - Não verificado: o caminho sem WebGL na prática e o botão de cadastro com sessão real.
 - Em desenvolvimento, a cena leva alguns segundos para aparecer (geração de texturas).
+
+## Céu contínuo, navegação do painel, retorno após salvar e sugestão de planeta (concluída)
+
+- **Céu em todas as seções, um só WebGL.** Escolhi a abordagem mais simples que cumpre a regra: a
+  página continua com um único canvas, que agora é uma camada fixa em tela cheia atrás de todo o
+  conteúdo (`z-index: -1`, `pointer-events: none`, `aria-hidden`), sempre renderizando, e nunca é
+  recriado ao rolar. A cena (planetas ou sistema vazio) fica num grupo que só aparece enquanto a
+  própria seção está na tela; depois disso fica só o céu, com paralaxe leve ligada à rolagem
+  (`SpaceBackground`). `View` do drei não foi necessário porque não há duas cenas ao mesmo tempo.
+  O `CssStarfield` virou a base fixa do layout público e do login: cobre o carregamento e o caso
+  sem WebGL. Fundos opacos removidos; "Sobre" e rodapé usam `bg-surface` translúcido com desfoque.
+- `ButtonLink` (`components/ui`) substitui todos os links com visual de botão.
+- Painel: "Voltar ao site" (`/#sobre`) no cabeçalho de todas as telas e "Voltar ao painel" em criar e
+  editar, via `GuardedLink` + `UnsavedChangesProvider`, que pede confirmação num `Dialog` quando o
+  formulário tem alterações. O "Sobre" já tinha `id="sobre"` e `scroll-mt-24`.
+- Salvar (rascunho ou publicação, ao criar ou editar) revalida o painel e as páginas públicas e
+  redireciona para `/dashboard?aviso=...`; `SavedNotice` mostra o `Toast` e limpa a URL. Erros
+  mantêm o formulário preenchido; cada botão mostra o próprio carregamento e ambos ficam
+  desabilitados enquanto salva.
+- `lib/planet-suggestion.ts`: paleta por harmonia em HSL com tendências por textura numa tabela,
+  contraste 4,5:1 garantido ajustando a luminosidade, anel em parte das sugestões, semente opcional
+  e sem repetir a textura anterior; 300 sementes testadas. Novas funções `hslToHex` e `hexToHsl` em
+  `lib/color.ts`, testadas.
+- "Sugerir planeta" e "Desfazer sugestão" na seção Paleta, com anúncio em `aria-live`; projeto novo
+  já abre com uma sugestão (gerada no servidor, depois de `connection()`).
+- Corrigido: miniaturas dos cartões de "Todos os projetos" esticavam até a largura do cartão.
+- Verificado no navegador (rotas temporárias, removidas): céu contínuo com projetos e vazio, 1440 e
+  390 px, âncora `/#sobre` com o título visível, sugestão, desfazer e o diálogo de descarte.
+- Não verificado com sessão real: o redirecionamento após salvar e o aviso na lista.

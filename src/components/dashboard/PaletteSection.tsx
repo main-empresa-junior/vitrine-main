@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils/cn';
 
 import { ColorField } from './ColorField';
 import { FormSection } from './FormSection';
+import { PlanetSuggestionControls } from './PlanetSuggestionControls';
 
 const TEXTURE_OPTIONS = PLANET_TEXTURES.map((texture) => ({
   value: texture,
@@ -34,8 +35,9 @@ export function PaletteSection() {
   return (
     <FormSection
       title="Paleta"
-      description="Pinta o planeta e a página do projeto. Escolha uma pronta ou ajuste as três cores."
+      description="Pinta o planeta e a página do projeto. Peça uma sugestão, escolha uma paleta pronta ou ajuste as três cores."
     >
+      <PlanetSuggestionControls />
       <div role="group" aria-label="Paletas prontas" className="flex flex-wrap gap-2">
         {PALETTE_PRESETS.map((preset) => {
           const isSelected =
