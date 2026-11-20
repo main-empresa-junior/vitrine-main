@@ -5,6 +5,9 @@ import { Logo } from '@/components/ui/Logo';
 
 import { LoginForm } from './LoginForm';
 
+// Lê o parâmetro next da URL antes de renderizar o formulário.
+export const instant = false;
+
 export const metadata: Metadata = {
   title: 'Entrar no painel',
   robots: { index: false },

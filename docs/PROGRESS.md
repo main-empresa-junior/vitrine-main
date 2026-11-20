@@ -21,6 +21,28 @@
   (`<dialog>` nativo com `showModal`), `Toast` + `ToastProvider`, `ThemeToggle`, `MotionToggle`.
 - Página inicial padrão do Next substituída por um marcador em `(site)`, com tema escuro.
 
+## Etapa 2 — Supabase e autenticação (concluída)
+
+- Migração `20261120000000_initial_schema.sql` aplicada no projeto Vitrine MAIN: `projects`,
+  `project_features`, `project_images`, enums, gatilho `updated_at`, RLS e bucket `project-images`
+  (5 MB, PNG/JPG/WebP/AVIF).
+- Tipos gerados em `src/types/database.ts` (`npm run db:types`, agora com `--remote`).
+- Clientes tipados; `public.ts` lê sem cookies para as consultas em cache.
+- `features/auth`: esquema, ações `signIn`/`signOut`, `getSafeDashboardPath` (testado) e
+  `requireTeamMember`.
+- Logos em `public/brand/` (os pares `on-light`/`on-dark` e `mono-black`/`mono-white` vieram
+  trocados e foram renomeados); `icon.png` e `apple-icon.png` em `src/app`.
+
+## Etapa 3 — painel (concluída)
+
+- `features/projects`: constantes, esquema Zod único (navegador e Server Action), slug, ordem,
+  modelo, consultas (`'use cache'` + `cacheTag`) e ações com `updateTag` + `revalidatePath`.
+- Lista com miniatura 2D do planeta, busca, reordenar, publicar e excluir com `Dialog`.
+- `ProjectEditor` com seções, `TagInput`, `ColorField` (react-colorful), upload de telas e prévia ao
+  vivo com o mesmo `Planet` 3D e a mesma `ProjectSheet` da vitrine.
+- `lib/color`, `lib/noise`, `lib/textures` com testes.
+- Não verificado com sessão real: precisa da senha do usuário de teste.
+
 ## Próximo
 
-Etapa 2: Supabase e autenticação.
+Etapa 4: vitrine 3D.
