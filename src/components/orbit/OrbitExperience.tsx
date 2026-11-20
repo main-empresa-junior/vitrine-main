@@ -50,6 +50,7 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   const introRef = useRef<HTMLDivElement>(null);
   const dimRef = useRef<HTMLDivElement>(null);
   const veilRef = useRef<HTMLDivElement>(null);
+  const isPointerFocusRef = useRef(false);
   // Única fonte de verdade: a cena e toda a interface da órbita aparecem e somem juntas.
   const isOrbitActive = useIsVisible(sectionRef, ORBIT_ACTIVE_MARGIN);
   const reducedMotion = useReducedMotion();
@@ -100,6 +101,21 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
     },
     [scrollToStop],
   );
+
+  // Chegando pelo teclado com a órbita só em parte na tela, a página volta à parada atual.
+  // Só para foco de teclado: no clique, rolar antes do mouseup faria o clique se perder.
+  function showStageOnFocus() {
+    const section = sectionRef.current;
+    const isFromPointer = isPointerFocusRef.current;
+    isPointerFocusRef.current = false;
+    if (!section || isFromPointer) return;
+    const box = section.getBoundingClientRect();
+    if (box.top <= 0 && box.bottom >= window.innerHeight) return;
+    scrollToStop(
+      Math.min(lastStop, Math.max(0, Math.round(journeyRef.current.progressTarget))),
+      true,
+    );
+  }
 
   function startTravel(destination: number) {
     if (journeyRef.current.travel || destination < 0 || destination >= orbits.length) return;
@@ -167,6 +183,13 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
         <JourneyIntro ref={introRef} />
         <div
           inert={!isOrbitActive}
+          onPointerDown={() => {
+            isPointerFocusRef.current = true;
+          }}
+          onPointerUp={() => {
+            isPointerFocusRef.current = false;
+          }}
+          onFocus={showStageOnFocus}
           className={cn('absolute inset-0', fadeClasses(isOrbitActive, 'none'))}
         >
           <p aria-live="polite" className="sr-only">

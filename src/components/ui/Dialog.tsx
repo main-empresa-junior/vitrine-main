@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useEffect, useId, useRef } from 'react';
+import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef } from 'react';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -53,6 +53,25 @@ export function Dialog({
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
+  // O <dialog> nativo deixa o Tab sair para a barra do navegador; aqui ele volta ao começo.
+  function keepFocusInside(event: KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== 'Tab') return;
+    const focusable = [
+      ...event.currentTarget.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex="0"]',
+      ),
+    ];
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }
+
   const heading = (
     <div className={cn('flex items-start justify-between gap-4', isSheet && 'order-first')}>
       <h2 id={titleId} className="font-display text-heading">
@@ -76,6 +95,7 @@ export function Dialog({
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       onClose={onClose}
+      onKeyDown={keepFocusInside}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}

@@ -6,18 +6,19 @@ import { cn } from '@/lib/utils/cn';
 
 import { MAIN_CONTENT_ID } from './main-content-id';
 
-// A primeira página carregada não rouba o foco; as seguintes recebem o foco ao trocar de rota.
-let hasShownFirstPage = false;
+// A primeira página carregada não rouba o foco; ao trocar de rota, a página nova recebe o foco.
+// Compara o caminho para não reagir à segunda execução de efeitos do modo estrito.
+let lastFocusedPath: string | null = null;
 
 export function MainContent({ className, ...props }: HTMLAttributes<HTMLElement>) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!hasShownFirstPage) {
-      hasShownFirstPage = true;
-      return;
-    }
-    if (window.location.hash) return;
+    const path = window.location.pathname;
+    const isFirstPage = lastFocusedPath === null;
+    if (lastFocusedPath === path) return;
+    lastFocusedPath = path;
+    if (isFirstPage || window.location.hash) return;
     ref.current?.focus({ preventScroll: true });
   }, []);
 

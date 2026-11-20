@@ -211,6 +211,11 @@
     @apply bg-background font-sans text-body text-foreground antialiased;
   }
 
+  /* O foco levado à tela pelo teclado não para atrás do cabeçalho fixo nem dos controles do rodapé. */
+  html {
+    scroll-padding-block: 6rem 8rem;
+  }
+
   :focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 3px;
