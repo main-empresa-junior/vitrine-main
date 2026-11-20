@@ -142,7 +142,7 @@ export async function moveProject(id: string, direction: MoveDirection): Promise
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('projects')
-    .select('id, position')
+    .select('id, position, published')
     .order('position')
     .order('created_at');
   if (error) return { ok: false, error: 'Não foi possível reordenar.' };
@@ -151,6 +151,7 @@ export async function moveProject(id: string, direction: MoveDirection): Promise
     data,
     data.findIndex((project) => project.id === id),
     direction,
+    (a, b) => a.published === b.published,
   );
   const updates = ordered
     .map((project, position) => ({ ...project, position }))

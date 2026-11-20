@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { Carousel } from '@/components/ui/Carousel';
 import { FadeIn } from '@/components/ui/FadeIn';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { PROJECT_TYPES, type ProjectType } from '@/features/projects/constants';
@@ -60,13 +61,15 @@ export function AllProjects({ projects }: AllProjectsProps) {
         {visible.length === 0 ? (
           <p className="mt-8 text-muted">Nenhum projeto desse tipo ainda.</p>
         ) : (
-          <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {visible.map((project) => (
-              <li key={project.id}>
-                <ProjectCard project={project} />
-              </li>
-            ))}
-          </ul>
+          <div className="mt-8">
+            <Carousel
+              label="Todos os projetos"
+              items={visible.map((project) => ({
+                key: project.id,
+                content: <ProjectCard project={project} />,
+              }))}
+            />
+          </div>
         )}
       </FadeIn>
     </section>

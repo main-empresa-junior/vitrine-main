@@ -2,7 +2,20 @@ import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import type { MoveDirection } from '@/features/projects/ordering';
 
+// Na vertical, "cima" e "baixo"; na horizontal (carrossel), "antes" e "depois" na mesma ordem.
+const ORIENTATIONS = {
+  vertical: {
+    back: { icon: 'arrowUp', words: 'para cima' },
+    forward: { icon: 'arrowDown', words: 'para baixo' },
+  },
+  horizontal: {
+    back: { icon: 'arrowLeft', words: 'para antes' },
+    forward: { icon: 'arrowRight', words: 'para depois' },
+  },
+} as const;
+
 type ReorderButtonsProps = {
+  orientation?: keyof typeof ORIENTATIONS;
   itemLabel: string;
   canMoveUp: boolean;
   canMoveDown: boolean;
@@ -18,7 +31,9 @@ export function ReorderButtons({
   disabled = false,
   onMove,
   onRemove,
+  orientation = 'vertical',
 }: ReorderButtonsProps) {
+  const { back, forward } = ORIENTATIONS[orientation];
   return (
     <div className="flex items-center gap-1">
       <Button
@@ -27,9 +42,9 @@ export function ReorderButtons({
         className="px-0"
         disabled={!canMoveUp || disabled}
         onClick={() => onMove('up')}
-        aria-label={`Mover ${itemLabel} para cima`}
+        aria-label={`Mover ${itemLabel} ${back.words}`}
       >
-        <Icon name="arrowUp" />
+        <Icon name={back.icon} />
       </Button>
       <Button
         variant="ghost"
@@ -37,9 +52,9 @@ export function ReorderButtons({
         className="px-0"
         disabled={!canMoveDown || disabled}
         onClick={() => onMove('down')}
-        aria-label={`Mover ${itemLabel} para baixo`}
+        aria-label={`Mover ${itemLabel} ${forward.words}`}
       >
-        <Icon name="arrowDown" />
+        <Icon name={forward.icon} />
       </Button>
       {onRemove && (
         <Button

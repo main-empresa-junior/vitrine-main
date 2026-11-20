@@ -22,6 +22,13 @@ describe('moveItem', () => {
     expect(moveItem(['a', 'b', 'c'], 1, 'down')).toEqual(['a', 'c', 'b']);
   });
 
+  it('skips items of another group', () => {
+    const items = ['p1', 'd1', 'p2', 'd2'];
+    const sameGroup = (a: string, b: string) => a[0] === b[0];
+    expect(moveItem(items, 2, 'up', sameGroup)).toEqual(['p2', 'd1', 'p1', 'd2']);
+    expect(moveItem(items, 3, 'down', sameGroup)).toEqual(items);
+  });
+
   it('keeps the order at the edges', () => {
     expect(moveItem(['a', 'b'], 0, 'up')).toEqual(['a', 'b']);
     expect(moveItem(['a', 'b'], 1, 'down')).toEqual(['a', 'b']);
