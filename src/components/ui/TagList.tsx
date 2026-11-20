@@ -1,0 +1,18 @@
+import { Tag } from './Tag';
+
+type TagListProps = {
+  items: readonly string[];
+  label?: string;
+};
+
+export function TagList({ items, label }: TagListProps) {
+  return (
+    <ul aria-label={label} className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <li key={item}>
+          <Tag>{item}</Tag>
+        </li>
+      ))}
+    </ul>
+  );
+}

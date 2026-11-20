@@ -13,14 +13,14 @@ void main() {
   gl_Position = projectionMatrix * modelView;
 }`;
 
-// Brilho de borda: mais forte onde a normal fica perpendicular ao olhar.
+// Faces de trás da casca: o brilho é forte junto ao planeta e some até a borda externa.
 const FRAGMENT_SHADER = `
 uniform vec3 color;
 varying vec3 vNormal;
 varying vec3 vPosition;
 void main() {
-  float intensity = pow(clamp(0.68 - dot(vNormal, normalize(-vPosition)), 0.0, 1.0), 2.6);
-  gl_FragColor = vec4(color, 1.0) * intensity * 0.85;
+  float facing = clamp(-dot(vNormal, normalize(-vPosition)), 0.0, 1.0);
+  gl_FragColor = vec4(color, 1.0) * pow(facing, 1.4) * 1.3;
 }`;
 
 type AtmosphereProps = {

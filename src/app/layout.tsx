@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Figtree, Unbounded } from 'next/font/google';
+import Script from 'next/script';
 
 import { PREFERENCES_SCRIPT } from '@/lib/preferences';
 
@@ -34,10 +35,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${unbounded.variable} ${figtree.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: PREFERENCES_SCRIPT }} />
-      </head>
-      <body>{children}</body>
+      <body>
+        <Script id="preferences" strategy="beforeInteractive">
+          {PREFERENCES_SCRIPT}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

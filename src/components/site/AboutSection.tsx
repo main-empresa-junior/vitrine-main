@@ -1,4 +1,5 @@
 import { Logo } from '@/components/ui/Logo';
+import { SectionTitle } from '@/components/ui/SectionTitle';
 
 export function AboutSection() {
   return (
@@ -9,9 +10,7 @@ export function AboutSection() {
     >
       <div className="grid items-center gap-12 md:grid-cols-2">
         <div>
-          <h2 id="about-title" className="font-display text-title">
-            Sobre a Main
-          </h2>
+          <SectionTitle id="about-title">Sobre a Main</SectionTitle>
           <p className="mt-5 max-w-prose text-lead text-muted">
             [Texto sobre a Main: quem somos, o que fazemos e como trabalhamos.]
           </p>

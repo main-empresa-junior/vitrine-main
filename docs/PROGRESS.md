@@ -58,6 +58,17 @@
 - Verificado no navegador com dados fictícios (rota temporária, já removida): visão geral, parada no
   planeta com ficha, e viagem para a órbita 2.
 
+## Etapa 5 — página do projeto (concluída)
+
+- `/projects/[slug]` com `generateStaticParams` (cache de 1 h, revalidado ao salvar),
+  `notFound()` para slug inexistente ou rascunho, metadados e `opengraph-image` por projeto.
+- Página pintada pela paleta (`projectPageBackground` garante contraste 7:1 mesmo com cor clara),
+  planeta 3D grande, ficha, funcionalidades, galeria com ampliação em `Dialog` e próximo projeto.
+- Script de preferências passou para `next/script` com `beforeInteractive` (aviso do React 19).
+- Brilho da atmosfera refeito para sumir suavemente na borda.
+- Com Cache Components, `generateStaticParams` não pode ser vazio: sem projetos publicados, gera
+  `/projects/sem-projetos`, que responde 404.
+
 ## Próximo
 
-Etapa 5: página do projeto.
+Etapa 6: Orbi, o mascote.

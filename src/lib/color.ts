@@ -59,3 +59,18 @@ export function readableTextColor(background: string): string {
     ? DARK_TEXT
     : LIGHT_TEXT;
 }
+
+const PAGE_BASE = '#05071C';
+const PAGE_TEXT = '#EEF1FF';
+const PAGE_MAX_TINT = 0.45;
+const PAGE_MIN_CONTRAST = 7;
+const PAGE_TINT_STEP = 0.05;
+
+// Mistura a cor escura do projeto com o fundo do espaço, reduzindo a mistura até o texto ficar legível.
+export function projectPageBackground(projectBackground: string): string {
+  for (let tint = PAGE_MAX_TINT; tint > 0; tint -= PAGE_TINT_STEP) {
+    const candidate = rgbToHex(mixRgb(hexToRgb(PAGE_BASE), hexToRgb(projectBackground), tint));
+    if (contrastRatio(candidate, PAGE_TEXT) >= PAGE_MIN_CONTRAST) return candidate;
+  }
+  return PAGE_BASE;
+}

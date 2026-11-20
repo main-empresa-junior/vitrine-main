@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import { contrastRatio, hexToRgb, mixRgb, rampRgb, readableTextColor, rgbToHex } from './color';
+import {
+  contrastRatio,
+  hexToRgb,
+  mixRgb,
+  projectPageBackground,
+  rampRgb,
+  readableTextColor,
+  rgbToHex,
+} from './color';
 import { createNoise } from './noise';
 import { generatePlanetPixels, generateSunPixels, seedFromText } from './textures';
 
@@ -95,5 +103,12 @@ describe('readableTextColor', () => {
   it('picks dark text on light colors and white on dark ones', () => {
     expect(readableTextColor('#FFE3DC')).toBe('#0A0F33');
     expect(readableTextColor('#1A1D66')).toBe('#FFFFFF');
+  });
+});
+
+describe('projectPageBackground', () => {
+  it('keeps white text readable even for a light project color', () => {
+    expect(contrastRatio(projectPageBackground('#FFFFFF'), '#EEF1FF')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(projectPageBackground('#4A0B18'), '#B9C2EE')).toBeGreaterThanOrEqual(4.5);
   });
 });

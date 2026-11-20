@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { SectionTitle } from '@/components/ui/SectionTitle';
 import { PROJECT_TYPES, type ProjectType } from '@/features/projects/constants';
 import type { ShowcaseProject } from '@/features/projects/model';
 import { cn } from '@/lib/utils/cn';
@@ -32,9 +33,7 @@ export function AllProjects({ projects }: AllProjectsProps) {
       aria-labelledby="all-projects-title"
       className="relative scroll-mt-24 bg-linear-to-b from-transparent to-space-950 to-20% px-5 pt-48 pb-28 sm:px-12 lg:px-24"
     >
-      <h2 id="all-projects-title" className="font-display text-title">
-        Todos os projetos
-      </h2>
+      <SectionTitle id="all-projects-title">Todos os projetos</SectionTitle>
       <p className="mt-3 max-w-prose text-lead text-muted">
         Para quem quer achar um projeto sem viajar pelas órbitas.
       </p>
