@@ -1,0 +1,325 @@
+.orbi {
+  transform-origin: 50% 100%;
+}
+.orbi .orbi-eyes {
+  transform-origin: 52px 42px;
+  animation: orbi-blink 4.5s infinite;
+}
+.orbi .orbi-arm-right {
+  transform-origin: 78px 70px;
+}
+.orbi .orbi-arm-left {
+  transform-origin: 26px 70px;
+}
+.orbi .orbi-leg-left {
+  transform-origin: 42px 100px;
+}
+.orbi .orbi-leg-right {
+  transform-origin: 62px 100px;
+}
+.orbi .orbi-jets {
+  opacity: 0;
+  transform-origin: 52px 118px;
+  transition: opacity 0.2s;
+}
+.orbi-help {
+  transform-origin: 50% 100%;
+}
+
+/* Pular ao lado do botão */
+.orbi.jump {
+  animation: orbi-jump 2.4s ease-in-out;
+}
+.orbi.jump .orbi-arm-right {
+  animation: orbi-arms-up-right 0.8s ease-in-out 3;
+}
+.orbi.jump .orbi-arm-left {
+  animation: orbi-arms-up-left 0.8s ease-in-out 3;
+}
+
+/* Relar no botão, como um gato se esfregando */
+.orbi.nuzzle {
+  animation: orbi-nuzzle 3s ease-in-out;
+}
+.orbi.nuzzle .orbi-eyes {
+  animation: orbi-eyes-closed 3s ease-in-out;
+}
+.orbi-mascot.nuzzle .orbi-help {
+  animation: orbi-help-sway 3s ease-in-out;
+}
+
+/* Voar por cima do botão, com jatos nos pés */
+.orbi.fly {
+  z-index: 3;
+  animation: orbi-fly 3.6s ease-in-out;
+}
+.orbi.fly .orbi-jets {
+  opacity: 1;
+  animation: orbi-jet-flame 0.12s linear infinite alternate;
+}
+.orbi.fly .orbi-leg-left {
+  transform: rotate(14deg);
+}
+.orbi.fly .orbi-leg-right {
+  transform: rotate(-14deg);
+}
+.orbi.fly .orbi-arm-right {
+  transform: rotate(-40deg);
+}
+.orbi.fly .orbi-arm-left {
+  transform: rotate(40deg);
+}
+
+/* Sentar em cima do botão e balançar as pernas */
+.orbi.sit {
+  z-index: 3;
+  animation: orbi-sit 4.2s ease-in-out;
+}
+.orbi-mascot.sit .orbi-help {
+  animation: orbi-help-squash 4.2s ease-in-out;
+}
+.orbi.sit .orbi-leg-left {
+  animation: orbi-swing-leg 0.6s ease-in-out 1s 5 alternate;
+}
+.orbi.sit .orbi-leg-right {
+  animation: orbi-swing-leg 0.6s ease-in-out 1.3s 5 alternate;
+}
+
+/* Esconder atrás do botão e espiar */
+.orbi.peek {
+  animation: orbi-peek 3.6s ease-in-out;
+}
+
+/* Comemorar com um giro no ar */
+.orbi.spin {
+  animation: orbi-spin 1.8s ease-in-out;
+}
+.orbi.spin .orbi-jets {
+  opacity: 1;
+}
+
+/* Ao passar o mouse ou focar: para, olha para o botão e acena */
+.orbi.wave {
+  transform: rotate(-6deg);
+  transition: transform 0.3s;
+}
+.orbi.wave .orbi-arm-right {
+  animation: orbi-wave 0.45s ease-in-out infinite alternate;
+}
+
+[data-motion='reduced'] .orbi,
+[data-motion='reduced'] .orbi *,
+[data-motion='reduced'] .orbi-help {
+  animation: none !important;
+}
+
+@keyframes orbi-jump {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+  8%,
+  38%,
+  68% {
+    transform: translate(0, 0) scale(1.12, 0.86);
+  }
+  20%,
+  50%,
+  80% {
+    transform: translate(0, -46px) scale(0.94, 1.08);
+  }
+  30%,
+  60%,
+  90% {
+    transform: translate(0, 0) scale(1.08, 0.9);
+  }
+}
+@keyframes orbi-arms-up-right {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(-150deg);
+  }
+}
+@keyframes orbi-arms-up-left {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(150deg);
+  }
+}
+@keyframes orbi-nuzzle {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+  18% {
+    transform: translate(20px, 0) rotate(10deg);
+  }
+  28%,
+  48%,
+  68% {
+    transform: translate(24px, -4px) rotate(16deg);
+  }
+  38%,
+  58% {
+    transform: translate(18px, 0) rotate(8deg);
+  }
+  84% {
+    transform: translate(14px, 0) rotate(4deg);
+  }
+}
+@keyframes orbi-help-sway {
+  0%,
+  18%,
+  84%,
+  100% {
+    transform: rotate(0) scale(1);
+  }
+  28%,
+  48%,
+  68% {
+    transform: rotate(9deg) scale(1.04, 0.96);
+  }
+  38%,
+  58% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes orbi-eyes-closed {
+  0%,
+  15%,
+  86%,
+  100% {
+    transform: scaleY(1);
+  }
+  22%,
+  80% {
+    transform: scaleY(0.15);
+  }
+}
+@keyframes orbi-fly {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+  12% {
+    transform: translate(0, 6px) scale(1.1, 0.88) rotate(0);
+  }
+  30% {
+    transform: translate(46px, -120px) rotate(18deg);
+  }
+  48% {
+    transform: translate(108px, -140px) rotate(12deg);
+  }
+  62% {
+    transform: translate(124px, -70px) rotate(-14deg);
+  }
+  78% {
+    transform: translate(44px, -60px) rotate(-22deg);
+  }
+  92% {
+    transform: translate(0, -8px) rotate(-4deg);
+  }
+}
+@keyframes orbi-jet-flame {
+  from {
+    transform: scaleY(0.8);
+  }
+  to {
+    transform: scaleY(1.25);
+  }
+}
+@keyframes orbi-sit {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  14% {
+    transform: translate(40px, -86px) rotate(10deg);
+  }
+  24%,
+  80% {
+    transform: translate(86px, -58px) rotate(0);
+  }
+  90% {
+    transform: translate(40px, -60px) rotate(-10deg);
+  }
+}
+@keyframes orbi-help-squash {
+  0%,
+  22%,
+  82%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.12, 0.8);
+  }
+  30%,
+  78% {
+    transform: scale(1.04, 0.94);
+  }
+}
+@keyframes orbi-swing-leg {
+  from {
+    transform: rotate(-26deg);
+  }
+  to {
+    transform: rotate(18deg);
+  }
+}
+@keyframes orbi-peek {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  22%,
+  46%,
+  72% {
+    transform: translate(84px, 0) scale(0.82);
+  }
+  34% {
+    transform: translate(84px, -30px) scale(0.82);
+  }
+  58% {
+    transform: translate(84px, -30px) scale(0.82) rotate(-12deg);
+  }
+}
+@keyframes orbi-spin {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+  15% {
+    transform: translate(0, 4px) scale(1.1, 0.88);
+  }
+  55% {
+    transform: translate(0, -70px) rotate(360deg);
+  }
+  85% {
+    transform: translate(0, 0) rotate(360deg) scale(1.08, 0.9);
+  }
+}
+@keyframes orbi-wave {
+  from {
+    transform: rotate(-150deg);
+  }
+  to {
+    transform: rotate(-100deg);
+  }
+}
+@keyframes orbi-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}

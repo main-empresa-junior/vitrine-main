@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { OrbiCorner } from '@/components/mascot/OrbiCorner';
 import { SiteFooter } from '@/components/site/SiteFooter';
 import { SiteHeader } from '@/components/site/SiteHeader';
 
@@ -9,6 +10,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <SiteHeader />
       {children}
       <SiteFooter />
+      <OrbiCorner />
     </div>
   );
 }

@@ -69,6 +69,14 @@
 - Com Cache Components, `generateStaticParams` não pode ser vazio: sem projetos publicados, gera
   `/projects/sem-projetos`, que responde 404.
 
+## Etapa 6 — Orbi (concluída)
+
+- `components/mascot`: `OrbiFigure` (SVG com capacete hexagonal no degradê da marca),
+  `OrbiCorner` (brincadeiras sorteadas sem repetir: pular, relar, voar, sentar, espiar, girar; para e
+  acena ao passar o mouse ou focar) e `orbi.css`. Sorteio testado em `orbi-actions.test.ts`.
+- Botão de dúvida abre `mailto:` com assunto, usando `NEXT_PUBLIC_CONTACT_EMAIL`.
+- Parado no modo de movimento reduzido.
+
 ## Próximo
 
-Etapa 6: Orbi, o mascote.
+Etapa 7: acabamento e publicação.
