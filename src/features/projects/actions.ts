@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath, updateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 import { requireTeamMember } from '@/features/auth/session';
@@ -9,6 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 import { PROJECT_IMAGES_BUCKET, PROJECTS_CACHE_TAG } from './constants';
 import { toProjectColumns } from './model';
 import { type MoveDirection, moveItem } from './ordering';
+import { SAVE_NOTICE_PARAM, saveNoticeFor } from './save-notice';
 import { projectFormSchema, type ProjectFormValues } from './schema';
 
 const UNIQUE_VIOLATION = '23505';
@@ -16,6 +18,8 @@ const idSchema = z.uuid();
 
 export type ActionResult =
   { ok: true; id: string } | { ok: false; error: string; field?: keyof ProjectFormValues };
+
+export type SaveFailure = Extract<ActionResult, { ok: false }>;
 
 function refreshPublicPages(): void {
   updateTag(PROJECTS_CACHE_TAG);
@@ -76,7 +80,7 @@ async function replaceChildren(
 export async function saveProject(
   input: ProjectFormValues,
   projectId?: string,
-): Promise<ActionResult> {
+): Promise<SaveFailure> {
   await requireTeamMember();
   const parsed = projectFormSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: 'Confira os campos destacados.' };
@@ -111,10 +115,11 @@ export async function saveProject(
   if (childError) return { ok: false, error: childError };
 
   refreshPublicPages();
-  return { ok: true, id };
+  const notice = saveNoticeFor(parsed.data.published, Boolean(projectId));
+  redirect(`/dashboard?${SAVE_NOTICE_PARAM}=${notice}`);
 }
 
-function saveError(code: string): ActionResult {
+function saveError(code: string): SaveFailure {
   if (code === UNIQUE_VIOLATION) {
     return { ok: false, error: 'Já existe um projeto com esse endereço.', field: 'slug' };
   }

@@ -1,8 +1,7 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/Button';
@@ -16,6 +15,9 @@ import { InfoSection } from './InfoSection';
 import { PaletteSection } from './PaletteSection';
 import { ProjectPreview } from './ProjectPreview';
 import { TeamSection } from './TeamSection';
+import { useUnsavedChanges } from './UnsavedChangesProvider';
+
+type SaveMode = 'draft' | 'publish';
 
 type ProjectEditorProps = {
   initialValues: ProjectFormValues;
@@ -28,29 +30,39 @@ export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) 
     defaultValues: initialValues,
   });
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [savingAs, setSavingAs] = useState<SaveMode | null>(null);
   const showToast = useToast();
+  const { setHasUnsavedChanges } = useUnsavedChanges();
+  const { isDirty } = form.formState;
 
-  const submitWith = (published: boolean) =>
+  useEffect(() => {
+    setHasUnsavedChanges(isDirty);
+    return () => setHasUnsavedChanges(false);
+  }, [isDirty, setHasUnsavedChanges]);
+
+  // Em caso de sucesso a ação redireciona para a lista; aqui só chegam os erros.
+  const submitAs = (mode: SaveMode) =>
     form.handleSubmit(
-      (values) =>
+      (values) => {
+        setSavingAs(mode);
         startTransition(async () => {
-          const result = await saveProject({ ...values, published }, projectId);
-          if (!result.ok) {
-            if (result.field) form.setError(result.field, { message: result.error });
-            showToast(result.error, 'error');
-            return;
-          }
-          showToast(published ? 'Projeto publicado.' : 'Rascunho salvo.', 'success');
-          form.reset({ ...values, published });
-          if (!projectId) router.replace(`/dashboard/${result.id}/edit`);
-        }),
+          const failure = await saveProject(
+            { ...values, published: mode === 'publish' },
+            projectId,
+          );
+          setSavingAs(null);
+          // Depois de um redirect a promessa pode voltar sem valor: nada a mostrar aqui.
+          if (!failure) return;
+          if (failure.field) form.setError(failure.field, { message: failure.error });
+          showToast(failure.error, 'error');
+        });
+      },
       () => showToast('Confira os campos destacados.', 'error'),
     );
 
   return (
     <FormProvider {...form}>
-      <form noValidate onSubmit={submitWith(true)} className="grid gap-8 lg:grid-cols-5">
+      <form noValidate onSubmit={submitAs('publish')} className="grid gap-8 lg:grid-cols-5">
         <div className="flex flex-col gap-6 lg:col-span-3">
           <InfoSection isEditing={Boolean(projectId)} />
           <TeamSection />
@@ -62,10 +74,21 @@ export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) 
           <div className="flex flex-col gap-4 lg:sticky lg:top-6">
             <ProjectPreview projectId={projectId} />
             <div className="flex flex-wrap gap-3">
-              <Button variant="secondary" disabled={isPending} onClick={submitWith(false)}>
+              <Button
+                variant="secondary"
+                disabled={isPending}
+                isLoading={savingAs === 'draft'}
+                loadingLabel="Salvando…"
+                onClick={submitAs('draft')}
+              >
                 Salvar como rascunho
               </Button>
-              <Button type="submit" isLoading={isPending} loadingLabel="Salvando…">
+              <Button
+                type="submit"
+                disabled={isPending}
+                isLoading={savingAs === 'publish'}
+                loadingLabel="Publicando…"
+              >
                 Salvar e publicar
               </Button>
             </div>

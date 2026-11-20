@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { ProjectList } from '@/components/dashboard/ProjectList';
+import { SavedNotice } from '@/components/dashboard/SavedNotice';
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Icon } from '@/components/ui/Icon';
 import { getDashboardProjects } from '@/features/projects/queries';
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
         </ButtonLink>
       </div>
       <ProjectList projects={projects} />
+      <SavedNotice />
     </main>
   );
 }
