@@ -47,6 +47,7 @@ export function ImagesSection() {
 
   return (
     <FormSection
+      id="images-section"
       title="Telas"
       description="Capturas do projeto. Até 5 MB cada, em PNG, JPG, WebP ou AVIF. O texto alternativo é obrigatório."
     >

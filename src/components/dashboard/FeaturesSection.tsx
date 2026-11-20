@@ -1,12 +1,12 @@
 'use client';
 
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { TextArea } from '@/components/ui/TextArea';
 import { TextField } from '@/components/ui/TextField';
-import type { ProjectFormValues } from '@/features/projects/schema';
+import { type ProjectFormValues, TEXT_LIMITS } from '@/features/projects/schema';
 
 import { FormSection } from './FormSection';
 import { ReorderButtons } from './ReorderButtons';
@@ -18,9 +18,11 @@ export function FeaturesSection() {
     formState: { errors },
   } = useFormContext<ProjectFormValues>();
   const { fields, append, remove, move } = useFieldArray({ control, name: 'features' });
+  const values = useWatch({ control, name: 'features' });
 
   return (
     <FormSection
+      id="features-section"
       title="Funcionalidades"
       description="O que o projeto faz, na ordem em que aparece."
     >
@@ -45,12 +47,22 @@ export function FeaturesSection() {
                 </div>
                 <TextField
                   id={`features-${index}-title`}
+                  maxLength={TEXT_LIMITS.featureTitle}
+                  count={{
+                    value: values[index]?.title.length ?? 0,
+                    max: TEXT_LIMITS.featureTitle,
+                  }}
                   label="Título"
                   error={errors.features?.[index]?.title?.message}
                   {...register(`features.${index}.title`)}
                 />
                 <TextArea
                   id={`features-${index}-description`}
+                  maxLength={TEXT_LIMITS.featureDescription}
+                  count={{
+                    value: values[index]?.description.length ?? 0,
+                    max: TEXT_LIMITS.featureDescription,
+                  }}
                   label="Descrição"
                   rows={2}
                   error={errors.features?.[index]?.description?.message}

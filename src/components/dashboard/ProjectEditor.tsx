@@ -1,15 +1,21 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { type BaseSyntheticEvent, useEffect, useRef, useState, useTransition } from 'react';
+import { FormProvider, type Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/ui/ToastProvider';
 import { saveProject } from '@/features/projects/actions';
-import { projectFormSchema, type ProjectFormValues } from '@/features/projects/schema';
+import {
+  projectDraftSchema,
+  type ProjectFormValues,
+  projectPublishSchema,
+} from '@/features/projects/schema';
 
 import { FeaturesSection } from './FeaturesSection';
+import { collectFormIssues, type FormIssue } from './form-issues';
+import { FormIssueList } from './FormIssueList';
 import { ImagesSection } from './ImagesSection';
 import { InfoSection } from './InfoSection';
 import { PaletteSection } from './PaletteSection';
@@ -19,18 +25,26 @@ import { useUnsavedChanges } from './UnsavedChangesProvider';
 
 type SaveMode = 'draft' | 'publish';
 
+const RESOLVERS: Record<SaveMode, Resolver<ProjectFormValues>> = {
+  draft: zodResolver(projectDraftSchema),
+  publish: zodResolver(projectPublishSchema),
+};
+
 type ProjectEditorProps = {
   initialValues: ProjectFormValues;
   projectId?: string;
 };
 
 export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) {
+  // O mesmo formulário valida como rascunho ou como publicação, conforme o botão usado.
+  const modeRef = useRef<SaveMode>('publish');
   const form = useForm<ProjectFormValues>({
-    resolver: zodResolver(projectFormSchema),
+    resolver: (values, context, options) => RESOLVERS[modeRef.current](values, context, options),
     defaultValues: initialValues,
   });
   const [isPending, startTransition] = useTransition();
   const [savingAs, setSavingAs] = useState<SaveMode | null>(null);
+  const [issues, setIssues] = useState<{ mode: SaveMode; items: FormIssue[] } | null>(null);
   const showToast = useToast();
   const { setHasUnsavedChanges } = useUnsavedChanges();
   const { isDirty } = form.formState;
@@ -41,9 +55,11 @@ export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) 
   }, [isDirty, setHasUnsavedChanges]);
 
   // Em caso de sucesso a ação redireciona para a lista; aqui só chegam os erros.
-  const submitAs = (mode: SaveMode) =>
-    form.handleSubmit(
+  function submitAs(mode: SaveMode, event?: BaseSyntheticEvent) {
+    modeRef.current = mode;
+    return form.handleSubmit(
       (values) => {
+        setIssues(null);
         setSavingAs(mode);
         startTransition(async () => {
           const failure = await saveProject(
@@ -57,13 +73,28 @@ export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) 
           showToast(failure.error, 'error');
         });
       },
-      () => showToast('Confira os campos destacados.', 'error'),
-    );
+      (errors) => setIssues({ mode, items: collectFormIssues(errors) }),
+    )(event);
+  }
 
   return (
     <FormProvider {...form}>
-      <form noValidate onSubmit={submitAs('publish')} className="grid gap-8 lg:grid-cols-5">
+      <form
+        noValidate
+        onSubmit={(event) => submitAs('publish', event)}
+        className="grid gap-8 lg:grid-cols-5"
+      >
         <div className="flex flex-col gap-6 lg:col-span-3">
+          {issues && issues.items.length > 0 && (
+            <FormIssueList
+              title={
+                issues.mode === 'publish'
+                  ? 'Faltam informações para publicar'
+                  : 'Confira antes de salvar o rascunho'
+              }
+              issues={issues.items}
+            />
+          )}
           <InfoSection isEditing={Boolean(projectId)} />
           <TeamSection />
           <FeaturesSection />
@@ -79,7 +110,7 @@ export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) 
                 disabled={isPending}
                 isLoading={savingAs === 'draft'}
                 loadingLabel="Salvando…"
-                onClick={submitAs('draft')}
+                onClick={(event) => submitAs('draft', event)}
               >
                 Salvar como rascunho
               </Button>

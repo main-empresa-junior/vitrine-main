@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Select } from '@/components/ui/Select';
 import { TextArea } from '@/components/ui/TextArea';
 import { TextField } from '@/components/ui/TextField';
 import { PROJECT_TYPE_LABELS, PROJECT_TYPES } from '@/features/projects/constants';
-import type { ProjectFormValues } from '@/features/projects/schema';
+import { type ProjectFormValues, TEXT_LIMITS } from '@/features/projects/schema';
 import { slugify } from '@/features/projects/slug';
 
 import { FormSection } from './FormSection';
@@ -26,7 +26,12 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
     register,
     setValue,
     formState: { errors },
+    control,
   } = useFormContext<ProjectFormValues>();
+  const [name, summary, description] = useWatch({
+    control,
+    name: ['name', 'summary', 'description'],
+  });
   // Ao editar, o endereço já está publicado: só muda se alguém mexer nele de propósito.
   const [isSlugLocked, setIsSlugLocked] = useState(isEditing);
 
@@ -34,6 +39,8 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
     <FormSection title="Informações" description="O que aparece na ficha e na página do projeto.">
       <TextField
         id="name"
+        maxLength={TEXT_LIMITS.name}
+        count={{ value: name.length, max: TEXT_LIMITS.name }}
         label="Nome"
         error={errors.name?.message}
         {...register('name', {
@@ -74,6 +81,8 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
       </div>
       <TextField
         id="summary"
+        maxLength={TEXT_LIMITS.summary}
+        count={{ value: summary.length, max: TEXT_LIMITS.summary }}
         label="Resumo"
         hint="Uma linha sobre o que o projeto faz."
         error={errors.summary?.message}
@@ -81,6 +90,8 @@ export function InfoSection({ isEditing }: InfoSectionProps) {
       />
       <TextArea
         id="description"
+        maxLength={TEXT_LIMITS.description}
+        count={{ value: description.length, max: TEXT_LIMITS.description }}
         label="Descrição"
         rows={6}
         error={errors.description?.message}

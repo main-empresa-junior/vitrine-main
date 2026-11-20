@@ -7,8 +7,11 @@ type FieldProps = {
   label: string;
   error?: string;
   hint?: string;
+  count?: CharacterCount;
   children: ReactNode;
 };
+
+export type CharacterCount = { value: number; max: number };
 
 export const FIELD_CONTROL_CLASSES =
   'w-full rounded-field border border-border bg-surface px-4 text-body text-foreground placeholder:text-muted aria-invalid:border-danger';
@@ -18,12 +21,21 @@ export function fieldDescriptionIds(id: string, error?: string, hint?: string): 
   return ids.length > 0 ? ids.join(' ') : undefined;
 }
 
-export function Field({ id, label, error, hint, children }: FieldProps) {
+export function Field({ id, label, error, hint, count, children }: FieldProps) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-small font-semibold">
-        {label}
-      </label>
+      <div className="flex items-baseline justify-between gap-3">
+        <label htmlFor={id} className="text-small font-semibold">
+          {label}
+        </label>
+        {count && (
+          <span
+            className={count.value > count.max ? 'text-small text-danger' : 'text-small text-muted'}
+          >
+            {count.value}/{count.max}
+          </span>
+        )}
+      </div>
       {children}
       {hint && (
         <p id={`${id}-hint`} className="text-small text-muted">

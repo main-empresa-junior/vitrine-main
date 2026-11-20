@@ -2,19 +2,29 @@ import type { Ref, TextareaHTMLAttributes } from 'react';
 
 import { cn } from '@/lib/utils/cn';
 
-import { Field, FIELD_CONTROL_CLASSES, fieldDescriptionIds } from './Field';
+import { type CharacterCount, Field, FIELD_CONTROL_CLASSES, fieldDescriptionIds } from './Field';
 
 type TextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   id: string;
   label: string;
   error?: string;
   hint?: string;
+  count?: CharacterCount;
   ref?: Ref<HTMLTextAreaElement>;
 };
 
-export function TextArea({ id, label, error, hint, className, rows = 4, ...props }: TextAreaProps) {
+export function TextArea({
+  id,
+  label,
+  error,
+  hint,
+  count,
+  className,
+  rows = 4,
+  ...props
+}: TextAreaProps) {
   return (
-    <Field id={id} label={label} error={error} hint={hint}>
+    <Field id={id} label={label} error={error} hint={hint} count={count}>
       <textarea
         id={id}
         rows={rows}
