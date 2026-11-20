@@ -58,6 +58,9 @@ export function AllProjects({ projects }: AllProjectsProps) {
             </button>
           ))}
         </div>
+        <p aria-live="polite" className="sr-only">
+          {visible.length === 1 ? '1 projeto encontrado' : `${visible.length} projetos encontrados`}
+        </p>
         {visible.length === 0 ? (
           <p className="mt-8 text-muted">Nenhum projeto desse tipo ainda.</p>
         ) : (

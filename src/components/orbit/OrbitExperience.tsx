@@ -156,8 +156,12 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
           inert={!isOrbitActive}
           className={cn('absolute inset-0', fadeClasses(isOrbitActive, 'none'))}
         >
+          <p aria-live="polite" className="sr-only">
+            {activeProject
+              ? `Em destaque: ${activeProject.name}, planeta ${activeStop} de ${lastStop} da órbita ${orbitIndex + 1}.`
+              : ''}
+          </p>
           <div
-            aria-live="polite"
             inert={!activeProject}
             className={cn(
               'absolute inset-x-4 bottom-24 sm:right-auto sm:left-12 sm:w-md md:top-1/2 md:bottom-auto md:-translate-y-1/2 lg:left-24',
