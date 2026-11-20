@@ -11,7 +11,7 @@
     "format:check": "prettier --check .",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "db:types": "supabase gen types typescript --linked --schema public > src/types/database.ts",
+    "db:types": "supabase gen types typescript --remote --schema public > src/types/database.ts && prettier --write src/types/database.ts",
     "prepare": "husky"
   },
   "lint-staged": {

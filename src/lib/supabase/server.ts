@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 
+import type { Database } from '@/types/database';
+
 import { supabaseEnv } from './env';
 
 import 'server-only';
@@ -8,7 +10,7 @@ import 'server-only';
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseEnv.url, supabaseEnv.publishableKey, {
+  return createServerClient<Database>(supabaseEnv.url, supabaseEnv.publishableKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -17,8 +19,7 @@ export async function createClient() {
         try {
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
         } catch {
-          // Server Components cannot write cookies. This is safe to ignore
-          // because the proxy refreshes the session on every dashboard request.
+          // Server Components não gravam cookies; o proxy já renova a sessão a cada requisição.
         }
       },
     },
