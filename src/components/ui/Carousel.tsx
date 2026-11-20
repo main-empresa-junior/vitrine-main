@@ -105,12 +105,16 @@ export function Carousel({ label, items }: CarouselProps) {
         {items.map((item, index) => (
           <li
             key={item.key}
-            role="group"
-            aria-roledescription="item"
-            aria-label={`${index + 1} de ${items.length}`}
             className="shrink-0 basis-5/6 snap-start px-2 sm:basis-1/2 md:basis-1/3 xl:basis-1/4"
           >
-            {item.content}
+            <div
+              role="group"
+              aria-roledescription="item"
+              aria-label={`${index + 1} de ${items.length}`}
+              className="h-full"
+            >
+              {item.content}
+            </div>
           </li>
         ))}
       </ul>
