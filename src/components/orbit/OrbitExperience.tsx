@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-import { CssStarfield } from '@/components/site/CssStarfield';
 import type { ShowcaseProject } from '@/features/projects/model';
 import { useIsVisible } from '@/hooks/useIsVisible';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -86,7 +85,6 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
   if (!hasWebGL) {
     return (
       <section className="px-5 pt-40 pb-6 sm:px-12 lg:px-24">
-        <CssStarfield />
         <div className="relative">
           <h1 className="font-display text-display">Projetos em órbita</h1>
           <p className="mt-5 max-w-prose text-lead text-muted">
@@ -117,7 +115,7 @@ export function OrbitExperience({ projects }: OrbitExperienceProps) {
       <OrbitScene
         orbits={orbits}
         journeyRef={journeyRef}
-        isActive={isVisible}
+        isSceneVisible={isVisible}
         onProgress={handleProgress}
         onStopChange={setActiveStop}
         onTravelEnd={handleTravelEnd}

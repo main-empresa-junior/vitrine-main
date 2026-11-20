@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { SpaceBackdrop } from '@/components/orbit/SpaceBackdrop';
+import { CssStarfield } from '@/components/site/CssStarfield';
 import { Card } from '@/components/ui/Card';
 import { Logo } from '@/components/ui/Logo';
 
@@ -20,8 +21,9 @@ export default async function LoginPage({ searchParams }: PageProps<'/dashboard/
   return (
     <main
       data-theme="dark"
-      className="relative flex min-h-dvh items-center justify-center bg-space-950 px-5 py-10"
+      className="relative flex min-h-dvh items-center justify-center px-5 py-10"
     >
+      <CssStarfield />
       <SpaceBackdrop />
       <div data-theme="light" className="relative w-full max-w-md text-foreground">
         <Card className="p-9">

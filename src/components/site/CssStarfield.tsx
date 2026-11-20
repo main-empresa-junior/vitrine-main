@@ -5,5 +5,10 @@ type CssStarfieldProps = {
 };
 
 export function CssStarfield({ className }: CssStarfieldProps) {
-  return <div aria-hidden="true" className={cn('fixed inset-0 bg-starfield', className)} />;
+  return (
+    <div
+      aria-hidden="true"
+      className={cn('pointer-events-none fixed inset-0 -z-1 bg-starfield', className)}
+    />
+  );
 }

@@ -12,15 +12,15 @@ import { SpaceCanvas } from './SpaceCanvas';
 type OrbitSceneProps = JourneyCallbacks & {
   orbits: readonly Orbit[];
   journeyRef: RefObject<JourneyState>;
-  isActive: boolean;
+  isSceneVisible: boolean;
 };
 
-export function OrbitScene({ orbits, journeyRef, isActive, ...callbacks }: OrbitSceneProps) {
+export function OrbitScene({ orbits, journeyRef, isSceneVisible, ...callbacks }: OrbitSceneProps) {
   const lastCenter = systemCenter(Math.max(0, orbits.length - 1));
   const skyCenter = [lastCenter[0] / 2, 0, lastCenter[2] / 2] as const;
 
   return (
-    <SpaceCanvas isActive={isActive} skyCenter={skyCenter}>
+    <SpaceCanvas isSceneVisible={isSceneVisible} skyCenter={skyCenter}>
       {orbits.map((orbit, orbitIndex) => (
         <SolarSystem key={orbitIndex} orbitIndex={orbitIndex} projects={orbit} />
       ))}

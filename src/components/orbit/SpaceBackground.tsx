@@ -13,6 +13,8 @@ import { Stars } from './Stars';
 
 const MILKY_WAY_TILT: Vec3 = [0.5, 0, 0.35];
 const SKY_SPIN = 0.004;
+// Paralaxe leve: o céu inclina um pouco conforme a página rola.
+const SCROLL_TILT_PER_PIXEL = 0.00004;
 
 type SpaceBackgroundProps = {
   center?: Vec3;
@@ -24,7 +26,10 @@ export function SpaceBackground({ center = [0, 0, 0] }: SpaceBackgroundProps) {
   const reducedMotion = useReducedMotion();
 
   useFrame((_, delta) => {
-    if (!reducedMotion && skyRef.current) skyRef.current.rotation.y += delta * SKY_SPIN;
+    const sky = skyRef.current;
+    if (!sky || reducedMotion) return;
+    sky.rotation.y += delta * SKY_SPIN;
+    sky.rotation.x = window.scrollY * SCROLL_TILT_PER_PIXEL;
   });
 
   return (

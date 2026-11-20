@@ -6,9 +6,9 @@ export function AboutSection() {
     <section
       id="sobre"
       aria-labelledby="about-title"
-      className="relative scroll-mt-24 bg-space-950 px-5 py-24 sm:px-12 lg:px-24"
+      className="scroll-mt-24 px-5 py-24 sm:px-12 lg:px-24"
     >
-      <div className="grid items-center gap-12 md:grid-cols-2">
+      <div className="grid items-center gap-12 rounded-panel border border-border bg-surface p-8 backdrop-blur-md md:grid-cols-2 md:p-12">
         <div>
           <SectionTitle id="about-title">Sobre a Main</SectionTitle>
           <p className="mt-5 max-w-prose text-lead text-muted">

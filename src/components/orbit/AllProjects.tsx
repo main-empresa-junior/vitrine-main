@@ -31,7 +31,7 @@ export function AllProjects({ projects }: AllProjectsProps) {
     <section
       id="todos"
       aria-labelledby="all-projects-title"
-      className="relative scroll-mt-24 bg-linear-to-b from-transparent to-space-950 to-20% px-5 pt-48 pb-28 sm:px-12 lg:px-24"
+      className="scroll-mt-24 px-5 pt-48 pb-28 sm:px-12 lg:px-24"
     >
       <SectionTitle id="all-projects-title">Todos os projetos</SectionTitle>
       <p className="mt-3 max-w-prose text-lead text-muted">

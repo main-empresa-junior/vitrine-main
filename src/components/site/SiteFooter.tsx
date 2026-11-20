@@ -5,7 +5,7 @@ export function SiteFooter() {
     <footer
       id="contato"
       aria-labelledby="contact-title"
-      className="relative border-t border-border bg-space-950 px-5 py-16 sm:px-12 lg:px-24"
+      className="border-t border-border bg-surface px-5 py-16 backdrop-blur-md sm:px-12 lg:px-24"
     >
       <h2 id="contact-title" className="font-display text-heading">
         Contato
