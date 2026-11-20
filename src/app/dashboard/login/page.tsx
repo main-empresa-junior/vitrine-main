@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 import { SpaceBackdrop } from '@/components/orbit/SpaceBackdrop';
 import { CssStarfield } from '@/components/site/CssStarfield';
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { Card } from '@/components/ui/Card';
+import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 
 import { LoginForm } from './LoginForm';
@@ -25,9 +28,19 @@ export default async function LoginPage({ searchParams }: PageProps<'/dashboard/
     >
       <CssStarfield />
       <SpaceBackdrop />
-      <div data-theme="light" className="relative w-full max-w-md text-foreground">
-        <Card className="p-9">
-          <Logo variant="onLight" priority />
+      <div className="relative flex w-full max-w-md flex-col gap-4">
+        <ButtonLink href="/" variant="secondary" size="sm" className="self-start">
+          <Icon name="arrowLeft" className="size-4" />
+          Voltar ao site
+        </ButtonLink>
+        <Card data-theme="light" className="p-9 text-foreground">
+          <Link
+            href="/"
+            aria-label="Main, voltar ao início"
+            className="inline-flex min-h-11 items-center rounded-field"
+          >
+            <Logo variant="onLight" priority />
+          </Link>
           <h1 className="mt-8 font-display text-title">Área da equipe</h1>
           <p className="mt-2 mb-7 text-muted">
             Entre para cadastrar e editar os projetos da vitrine.
