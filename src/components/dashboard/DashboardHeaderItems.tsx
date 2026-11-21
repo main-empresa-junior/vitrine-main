@@ -6,10 +6,11 @@ import { cn } from '@/lib/utils/cn';
 
 import { GuardedLink } from './GuardedLink';
 
-type DashboardHeaderItem = 'email' | 'site' | 'theme' | 'signOut';
+type DashboardHeaderItem = 'email' | 'requests' | 'site' | 'theme' | 'signOut';
 
 const DASHBOARD_HEADER_ITEMS: readonly DashboardHeaderItem[] = [
   'email',
+  'requests',
   'site',
   'theme',
   'signOut',
@@ -28,6 +29,12 @@ export function DashboardHeaderItems({ email, placement }: DashboardHeaderItemsP
     switch (item) {
       case 'email':
         return <p className="text-small break-all text-muted">{email}</p>;
+      case 'requests':
+        return (
+          <GuardedLink href="/dashboard/requests" variant="secondary" size="sm" className={width}>
+            Pedidos de projeto
+          </GuardedLink>
+        );
       case 'site':
         return (
           <GuardedLink href="/#sobre" variant="secondary" size="sm" className={width}>
