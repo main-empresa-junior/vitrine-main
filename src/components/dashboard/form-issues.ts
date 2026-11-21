@@ -7,6 +7,7 @@ export type FormIssue = {
 const SECTION_IDS: Record<string, string> = {
   features: 'features-section',
   images: 'images-section',
+  developers: 'developers-section',
 };
 
 type ErrorNode = {

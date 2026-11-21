@@ -8,6 +8,38 @@ export type Database = {
   };
   public: {
     Tables: {
+      project_developers: {
+        Row: {
+          id: string;
+          name: string;
+          position: number;
+          project_id: string;
+          url: string | null;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          position?: number;
+          project_id: string;
+          url?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          position?: number;
+          project_id?: string;
+          url?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'project_developers_project_id_fkey';
+            columns: ['project_id'];
+            isOneToOne: false;
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       project_features: {
         Row: {
           description: string;
@@ -83,7 +115,6 @@ export type Database = {
           color_primary: string;
           created_at: string;
           description: string;
-          developers: string[];
           has_ring: boolean;
           id: string;
           name: string;
@@ -104,7 +135,6 @@ export type Database = {
           color_primary: string;
           created_at?: string;
           description?: string;
-          developers?: string[];
           has_ring?: boolean;
           id?: string;
           name: string;
@@ -125,7 +155,6 @@ export type Database = {
           color_primary?: string;
           created_at?: string;
           description?: string;
-          developers?: string[];
           has_ring?: boolean;
           id?: string;
           name?: string;

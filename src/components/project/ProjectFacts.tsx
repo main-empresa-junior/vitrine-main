@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { TagList } from '@/components/ui/TagList';
 import type { ProjectDetails } from '@/features/projects/model';
 
+import { DeveloperList } from './DeveloperList';
+
 type ProjectFactsProps = {
   project: ProjectDetails;
 };
@@ -11,7 +13,7 @@ export function ProjectFacts({ project }: ProjectFactsProps) {
   const facts: { label: string; value: ReactNode }[] = [
     { label: 'Cliente', value: project.client },
     { label: 'Ano', value: project.year },
-    { label: 'Desenvolvido por', value: <TagList items={project.developers} /> },
+    { label: 'Desenvolvido por', value: <DeveloperList developers={project.developers} /> },
     { label: 'Tecnologias', value: <TagList items={project.technologies} /> },
   ];
 

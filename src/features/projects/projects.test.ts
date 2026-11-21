@@ -45,7 +45,7 @@ describe('draft and publish schemas', () => {
     summary: 'Alerta de engasgo.',
     description: 'Envia a localização e a ficha médica aos contatos.',
     technologies: ['Kotlin'],
-    developers: ['Ana'],
+    developers: [{ name: 'Ana', url: 'https://github.com/ana' }],
     features: [
       { title: 'Alerta', description: 'Um toque envia o alerta.' },
       { title: 'Ficha médica', description: 'Dados salvos no aparelho.' },

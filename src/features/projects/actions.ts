@@ -36,9 +36,10 @@ async function replaceChildren(
   projectId: string,
   values: ProjectFormValues,
 ): Promise<string | null> {
-  const [{ data: oldFeatures }, { data: oldImages }] = await Promise.all([
+  const [{ data: oldFeatures }, { data: oldImages }, { data: oldDevelopers }] = await Promise.all([
     supabase.from('project_features').select('id').eq('project_id', projectId),
     supabase.from('project_images').select('id, path').eq('project_id', projectId),
+    supabase.from('project_developers').select('id').eq('project_id', projectId),
   ]);
 
   // Insere antes de apagar: se algo falhar no meio, as listas antigas continuam salvas.
@@ -59,12 +60,27 @@ async function replaceChildren(
             values.images.map((image, position) => ({ ...image, project_id: projectId, position })),
           )
       : { error: null },
+    values.developers.length > 0
+      ? supabase.from('project_developers').insert(
+          values.developers.map((developer, position) => ({
+            name: developer.name,
+            url: developer.url || null,
+            project_id: projectId,
+            position,
+          })),
+        )
+      : { error: null },
   ]);
-  if (inserts.some(({ error }) => error)) return 'Não foi possível salvar funcionalidades e telas.';
+  if (inserts.some(({ error }) => error)) {
+    return 'Não foi possível salvar funcionalidades, telas e desenvolvedores.';
+  }
 
   const oldFeatureIds = (oldFeatures ?? []).map(({ id }) => id);
   const oldImageIds = (oldImages ?? []).map(({ id }) => id);
+  const oldDeveloperIds = (oldDevelopers ?? []).map(({ id }) => id);
   await Promise.all([
+    oldDeveloperIds.length > 0 &&
+      supabase.from('project_developers').delete().in('id', oldDeveloperIds),
     oldFeatureIds.length > 0 && supabase.from('project_features').delete().in('id', oldFeatureIds),
     oldImageIds.length > 0 && supabase.from('project_images').delete().in('id', oldImageIds),
   ]);
@@ -134,7 +150,8 @@ function saveError(code: string): SaveFailure {
   return { ok: false, error: 'Não foi possível salvar o projeto. Tente de novo.' };
 }
 
-// Funcionalidades e telas ficam em outras tabelas: a regra de publicação delas é garantida aqui.
+// Funcionalidades, telas e desenvolvedores ficam em outras tabelas: a regra de publicação deles é
+// garantida aqui.
 async function missingForPublishing(id: string): Promise<string | null> {
   const row = await getProjectForEditing(id);
   if (!row) return 'Projeto não encontrado.';

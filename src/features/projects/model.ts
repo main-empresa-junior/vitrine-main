@@ -9,6 +9,10 @@ type FeatureRow = Pick<
   Database['public']['Tables']['project_features']['Row'],
   'title' | 'description' | 'position'
 >;
+type DeveloperRow = Pick<
+  Database['public']['Tables']['project_developers']['Row'],
+  'name' | 'url' | 'position'
+>;
 type ImageRow = Pick<
   Database['public']['Tables']['project_images']['Row'],
   'path' | 'alt' | 'position'
@@ -17,6 +21,7 @@ type ImageRow = Pick<
 export type ProjectRowWithChildren = ProjectRow & {
   project_features: FeatureRow[];
   project_images: ImageRow[];
+  project_developers: DeveloperRow[];
 };
 
 export type ShowcaseProject = {
@@ -37,7 +42,7 @@ export type ShowcaseProject = {
 
 export type ProjectDetails = ShowcaseProject & {
   description: string;
-  developers: readonly string[];
+  developers: readonly DeveloperRow[];
   features: readonly FeatureRow[];
   images: readonly ImageRow[];
 };
@@ -68,7 +73,7 @@ export function toProjectDetails(row: ProjectRowWithChildren): ProjectDetails {
   return {
     ...toShowcaseProject(row),
     description: row.description,
-    developers: row.developers,
+    developers: row.project_developers,
     features: row.project_features,
     images: row.project_images,
   };
@@ -91,7 +96,7 @@ export function detailsToFormValues(
     summary: details.summary,
     description: details.description,
     technologies: [...details.technologies],
-    developers: [...details.developers],
+    developers: details.developers.map(({ name, url }) => ({ name, url: url ?? '' })),
     features: details.features.map(({ title, description }) => ({ title, description })),
     palette: details.palette,
     texture: details.texture,
@@ -111,7 +116,6 @@ export function toProjectColumns(values: ProjectFormValues) {
     summary: values.summary,
     description: values.description,
     technologies: values.technologies,
-    developers: values.developers,
     color_primary: values.palette.primary,
     color_accent: values.palette.accent,
     color_background: values.palette.background,

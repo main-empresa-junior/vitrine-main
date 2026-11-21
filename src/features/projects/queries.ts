@@ -15,7 +15,7 @@ import {
 import 'server-only';
 
 const WITH_CHILDREN =
-  '*, project_features(title, description, position), project_images(path, alt, position)';
+  '*, project_features(title, description, position), project_images(path, alt, position), project_developers(name, url, position)';
 
 function sortChildren(row: ProjectRowWithChildren): ProjectRowWithChildren {
   const byPosition = (a: { position: number }, b: { position: number }) => a.position - b.position;
@@ -23,6 +23,7 @@ function sortChildren(row: ProjectRowWithChildren): ProjectRowWithChildren {
     ...row,
     project_features: [...row.project_features].sort(byPosition),
     project_images: [...row.project_images].sort(byPosition),
+    project_developers: [...row.project_developers].sort(byPosition),
   };
 }
 

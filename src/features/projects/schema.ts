@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { PLANET_TEXTURES, PROJECT_TYPES } from './constants';
+import { isHttpsUrl } from './developer-link';
 import { SLUG_PATTERN } from './slug';
 
 // Limites que a página do projeto comporta sem quebrar o layout (iguais aos da migração).
@@ -10,6 +11,8 @@ export const TEXT_LIMITS = {
   description: 1200,
   featureTitle: 60,
   featureDescription: 200,
+  developerName: 60,
+  developerUrl: 300,
 } as const;
 
 export const PUBLISH_MINIMUMS = { features: 3, images: 1, technologies: 1, developers: 1 } as const;
@@ -38,6 +41,23 @@ const featureDraft = z.object({
     .max(TEXT_LIMITS.featureDescription, upTo(TEXT_LIMITS.featureDescription)),
 });
 
+export const developerSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, 'Informe o nome de quem desenvolveu.')
+    .max(TEXT_LIMITS.developerName, upTo(TEXT_LIMITS.developerName)),
+  // Vazio quando a pessoa não quer mostrar um link.
+  url: z
+    .string()
+    .trim()
+    .max(TEXT_LIMITS.developerUrl, upTo(TEXT_LIMITS.developerUrl))
+    .refine(
+      (url) => url === '' || isHttpsUrl(url),
+      'Use o endereço completo, começando com https://.',
+    ),
+});
+
 // Rascunho: só o que o banco exige para guardar a linha; o resto pode ficar para depois.
 export const projectDraftSchema = z.object({
   name: z
@@ -61,7 +81,7 @@ export const projectDraftSchema = z.object({
   summary: z.string().trim().max(TEXT_LIMITS.summary, upTo(TEXT_LIMITS.summary)),
   description: z.string().trim().max(TEXT_LIMITS.description, upTo(TEXT_LIMITS.description)),
   technologies: z.array(tag).max(MAX_TAGS, `Use até ${MAX_TAGS} tecnologias.`),
-  developers: z.array(tag).max(MAX_TAGS, `Use até ${MAX_TAGS} nomes.`),
+  developers: z.array(developerSchema).max(MAX_TAGS, `Use até ${MAX_TAGS} pessoas.`),
   features: z.array(featureDraft).max(MAX_FEATURES, `Use até ${MAX_FEATURES} funcionalidades.`),
   palette: z.object({ primary: hexColor, accent: hexColor, background: hexColor }),
   texture: z.enum(PLANET_TEXTURES, { error: 'Escolha a textura.' }),
