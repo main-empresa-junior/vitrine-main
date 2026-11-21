@@ -16,7 +16,7 @@ export type FaqItem = {
 };
 
 export const WELCOME_MESSAGE =
-  'Oi! Eu sou o Orbi, o mascote da Main. Escolha uma pergunta que eu te respondo.';
+  'Oi! Eu sou o Orbi, a assistente virtual da Main. Escolha uma pergunta que eu te respondo.';
 
 export const CONTACT_ID = 'contact';
 export const CONTACT_QUESTION = 'Entrar em contato';

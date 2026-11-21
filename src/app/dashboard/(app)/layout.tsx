@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 
 import { DashboardHeaderItems } from '@/components/dashboard/DashboardHeaderItems';
+import { SessionGuard } from '@/components/dashboard/SessionGuard';
 import { UnsavedChangesProvider } from '@/components/dashboard/UnsavedChangesProvider';
 import { Logo } from '@/components/ui/Logo';
 import { MobileMenu } from '@/components/ui/MobileMenu';
@@ -28,6 +29,7 @@ export default async function DashboardAppLayout({ children }: { children: React
           </div>
         </header>
         <div className="mx-auto max-w-7xl px-5 py-8">{children}</div>
+        <SessionGuard />
       </div>
     </UnsavedChangesProvider>
   );

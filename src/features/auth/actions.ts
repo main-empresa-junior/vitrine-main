@@ -1,11 +1,13 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
 
 import { getSafeDashboardPath } from './safe-redirect';
 import { type SignInInput, signInSchema } from './schema';
+import { SIGN_OUT_REASONS, type SignOutReason } from './session-limits';
 
 const LOGIN_PATH = '/dashboard/login';
 
@@ -28,8 +30,21 @@ export async function signIn(input: SignInInput, next?: string): Promise<SignInR
   redirect(getSafeDashboardPath(next));
 }
 
-export async function signOut(): Promise<never> {
+const reasonSchema = z.enum(SIGN_OUT_REASONS);
+
+// Encerra a sessão no Supabase (o refresh token deixa de valer), não só os cookies do navegador.
+async function endSession(query = ''): Promise<never> {
   const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect(LOGIN_PATH);
+  await supabase.auth.signOut({ scope: 'local' });
+  redirect(`${LOGIN_PATH}${query}`);
+}
+
+export async function signOut(): Promise<never> {
+  return endSession();
+}
+
+// Saída automática (inatividade ou outra aba): o login explica o motivo.
+export async function signOutBecause(reason: SignOutReason): Promise<never> {
+  const parsed = reasonSchema.safeParse(reason);
+  return endSession(parsed.success ? `?reason=${parsed.data}` : '');
 }

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
+import { isSessionTooOld } from '@/features/auth/session-limits';
 import type { Database } from '@/types/database';
 
 import { supabaseEnv } from './env';
@@ -28,10 +29,18 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   // Nada entre createServerClient e getClaims: isso dessincroniza a sessão e desloga ao acaso.
   const { data } = await supabase.auth.getClaims();
-  const isSignedIn = Boolean(data?.claims);
+  const claims = data?.claims;
 
   const { pathname, search } = request.nextUrl;
   const isLoginPage = pathname === LOGIN_PATH;
+
+  // Limite de 8 horas desde o login, conferido aqui e não só no navegador.
+  if (claims && isSessionTooOld(claims, Date.now())) {
+    await supabase.auth.signOut({ scope: 'local' });
+    return redirectKeepingCookies(request, response, LOGIN_PATH, { reason: 'expired' });
+  }
+
+  const isSignedIn = Boolean(claims);
 
   if (!isSignedIn && !isLoginPage) {
     return redirectKeepingCookies(request, response, LOGIN_PATH, { next: pathname + search });

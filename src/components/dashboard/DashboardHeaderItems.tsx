@@ -1,10 +1,9 @@
-import { Button } from '@/components/ui/Button';
 import { HEADER_LIST_CLASSES, type HeaderPlacement } from '@/components/ui/header-placement';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { signOut } from '@/features/auth/actions';
 import { cn } from '@/lib/utils/cn';
 
 import { GuardedLink } from './GuardedLink';
+import { SignOutButton } from './SignOutButton';
 
 type DashboardHeaderItem = 'email' | 'requests' | 'site' | 'theme' | 'signOut';
 
@@ -49,13 +48,7 @@ export function DashboardHeaderItems({ email, placement }: DashboardHeaderItemsP
           </span>
         );
       case 'signOut':
-        return (
-          <form action={signOut}>
-            <Button type="submit" variant="secondary" size="sm" className={width}>
-              Sair
-            </Button>
-          </form>
-        );
+        return <SignOutButton className={width} />;
     }
   }
 

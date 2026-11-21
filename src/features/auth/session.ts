@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 
+import { isSessionTooOld } from './session-limits';
+
 import 'server-only';
 
 export type TeamMember = {
@@ -15,5 +17,7 @@ export async function requireTeamMember(): Promise<TeamMember> {
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
   if (!claims) redirect('/dashboard/login');
+  // O proxy encerra a sessão vencida na próxima requisição ao painel, que é este redirecionamento.
+  if (isSessionTooOld(claims, Date.now())) redirect('/dashboard/login?reason=expired');
   return { id: claims.sub, email: typeof claims.email === 'string' ? claims.email : '' };
 }
