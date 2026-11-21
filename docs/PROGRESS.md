@@ -286,3 +286,34 @@ foram rodados aqui, sem sessão no Supabase); a home vazia só é verificada dep
 
 Próximo: textos reais do chat, de "Sobre a Main" e de contato; rodar os testes do painel com um
 usuário de teste.
+
+## Solicitar projeto, sessão do painel e links dos desenvolvedores (concluída, exceto o e-mail)
+
+- **Links dos desenvolvedores:** migração `20261122000000` cria `project_developers` (nome, link
+  https opcional, posição, RLS das tabelas filhas), copia os nomes da coluna antiga conferindo a
+  contagem e remove a coluna; a regra "pelo menos 1 desenvolvedor para publicar" passou para a
+  Server Action. No formulário, cada pessoa é uma linha com nome e link, e o tipo (GitHub,
+  LinkedIn ou site) é reconhecido pelo endereço (`developer-link.ts`, testado). Na página do
+  projeto, nomes com link abrem o perfil em nova aba, com nome acessível completo.
+- **Solicitar projeto:** página `/solicitar-projeto` com formulário validado pelo mesmo Zod no
+  navegador e no servidor, máscara de telefone, data mínima de hoje (horário de Brasília) e
+  consentimento com a seção "Como usamos seus dados" (prazo de guarda entre colchetes, a
+  confirmar). Os pedidos vão para `project_requests` pela função `submit_project_request`
+  (migrações `20261122000100` e `20261122000200`), que aplica o limite de envios. Honeypot e
+  tempo mínimo de 3 s descartam robôs em silêncio; Cloudflare Turnstile pronto e desligado.
+  Confirmação com o Orbi acenando e balão de fala (`OrbiSpeaking`), com foco. Entradas no
+  cabeçalho, no menu de celular, em "Sobre a Main", na cena vazia e no chat ("Quero um projeto").
+  O ponto de quebra do cabeçalho passou para 80rem por causa do item novo.
+- **Painel:** tela "Pedidos de projeto" (`/dashboard/requests`) com detalhes e troca de status.
+- **E-mail:** montado e escapado (`email.ts`, testado), mas por enquanto só registrado no servidor
+  (`mailer.ts`), esperando a escolha do serviço de envio.
+- **Sessão:** 30 min de inatividade com aviso 2 min antes (contagem compartilhada entre abas),
+  8 h no máximo desde o login (claim `amr`), conferidas no proxy e no `requireTeamMember`; sair
+  numa aba desconecta as outras e encerra a sessão no Supabase. Tempos em `session-limits.ts`.
+- **Testes:** Vitest para pedido, telefone, datas, antispam, e-mail, desenvolvedores e sessão;
+  Playwright para envio, validação, honeypot e limite de envios; axe na página nova e na
+  confirmação. Os testes que precisam de login (pedido no painel, inatividade, abas) não foram
+  rodados aqui.
+
+Próximo: escolher o serviço de e-mail e trocar o transporte em `mailer.ts`; confirmar o prazo de
+guarda dos dados; conferir uma vez, com login real, que o `amr` traz o horário do login.

@@ -56,6 +56,49 @@ privacy page.
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key                               |
 | `NEXT_PUBLIC_CONTACT_EMAIL`            | Main contact email, used by Orbi's question button and footer |
 | `NEXT_PUBLIC_SITE_URL`                 | Public URL of the site, used for metadata, sitemap and robots |
+| `PROJECT_REQUEST_EMAIL_TO`             | Where each new project request is emailed (`mainej@uem.br`)   |
+| `PROJECT_REQUEST_IP_SALT`              | Random secret mixed into the IP hash used by the rate limit   |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`       | Cloudflare Turnstile site key (empty = turned off)            |
+| `TURNSTILE_SECRET_KEY`                 | Cloudflare Turnstile secret key (empty = turned off)          |
+
+## Project requests
+
+`/solicitar-projeto` saves every request in `project_requests` through the database function
+`submit_project_request`, the only way visitors can write to that table. The team reads them and
+changes their status at `/dashboard/requests`. After saving, the server emails the team
+(`src/features/project-requests/mailer.ts`); if the email fails, the request stays saved and the
+failure is logged.
+
+Spam protection, all checked on the server:
+
+- a honeypot field that people never see; filled in means a robot, and the request is dropped
+  while showing the normal confirmation;
+- at least 3 seconds between opening the form and sending it;
+- 3 requests every 10 minutes per IP (stored only as a salted hash) and 30 in total, in
+  `submit_project_request`.
+
+To turn on **Cloudflare Turnstile** if spam still gets through: create a widget at
+<https://dash.cloudflare.com/?to=/:account/turnstile> for the site's domain, then set
+`NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel and redeploy. The form shows
+the check and the server verifies it; with the variables empty, it stays off.
+
+## Dashboard sessions
+
+Times live in `src/features/auth/session-limits.ts`:
+
+| Constant       | Value      | What it does                                                    |
+| -------------- | ---------- | --------------------------------------------------------------- |
+| `inactivityMs` | 30 minutes | No click, key, scroll or touch in any dashboard tab: signed out |
+| `warningMs`    | 2 minutes  | How early the "session will expire" dialog appears              |
+| `maxSessionMs` | 8 hours    | Hard limit since sign-in, checked in the proxy and every action |
+
+The 8-hour limit reads the sign-in time from the `amr` claim of the Supabase token. Signing out
+in one tab signs out every dashboard tab, and the session is ended in Supabase too.
+
+On the Supabase **Pro** plan, **Authentication → Sessions** can reinforce this: set **Time-box
+user sessions** to `8h`. Leave **Inactivity timeout** unset or above the access token lifetime
+(1 hour by default): Supabase counts inactivity from the last token refresh, so 30 minutes there
+would sign out people who are still working. These settings are not available on the Free plan.
 
 ## Database
 
