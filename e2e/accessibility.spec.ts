@@ -31,9 +31,18 @@ const PAGES: readonly PageCheck[] = [
   { name: 'project page', open: openFirstProject },
   { name: 'login', open: (page) => page.goto('/dashboard/login').then(() => undefined) },
   {
+    name: 'project request form',
+    open: (page) => page.goto('/solicitar-projeto').then(() => undefined),
+  },
+  {
     name: 'dashboard list',
     needsLogin: true,
     open: (page) => page.goto('/dashboard').then(() => undefined),
+  },
+  {
+    name: 'project requests',
+    needsLogin: true,
+    open: (page) => page.goto('/dashboard/requests').then(() => undefined),
   },
   {
     name: 'project form',
