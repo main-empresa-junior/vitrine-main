@@ -22,7 +22,7 @@ test.describe('Orbi chat', () => {
   test('answers a question and leads to all projects', async ({ page }) => {
     const chat = await openChat(page);
     await expectCornerHidden(page, true);
-    await expect(chat.getByRole('button', { name: 'O que é a Main?' })).toBeFocused();
+    await expect(chat.getByRole('button', { name: 'Quero um projeto' })).toBeFocused();
 
     await chat.getByRole('button', { name: 'Que tipo de projeto vocês fazem?' }).click();
     const projectsLink = chat.getByRole('link', { name: 'Ver todos os projetos' });

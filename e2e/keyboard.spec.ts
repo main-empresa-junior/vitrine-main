@@ -94,10 +94,10 @@ test.describe('keyboard only', () => {
     await tabThrough(page, 'Tab', 'Tirar uma dúvida com o Orbi');
     await page.keyboard.press('Enter');
     const chat = page.getByRole('dialog', { name: 'Converse com o Orbi' });
-    await expect(chat.getByRole('button', { name: 'O que é a Main?' })).toBeFocused();
+    await expect(chat.getByRole('button', { name: 'Quero um projeto' })).toBeFocused();
 
     await page.keyboard.press('Enter');
-    await expect(chat.getByRole('link', { name: 'Conhecer a Main' })).toBeVisible();
+    await expect(chat.getByRole('link', { name: 'Solicitar projeto' })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(chat).toBeHidden();
     await expect(page.getByRole('button', { name: 'Tirar uma dúvida com o Orbi' })).toBeFocused();
