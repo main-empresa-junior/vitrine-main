@@ -22,6 +22,7 @@ const CHAT_ID = 'orbi-chat';
 const FIRST_DELAY_MS = 1800;
 const MIN_PAUSE_MS = 900;
 const PAUSE_VARIATION_MS = 1400;
+const KEYBOARD_PAUSE_MS = 15000;
 
 export function OrbiCorner() {
   const reducedMotion = useReducedMotion();
@@ -47,6 +48,18 @@ export function OrbiCorner() {
     scheduleNext(FIRST_DELAY_MS);
     return () => clearTimeout(timerRef.current);
   }, [reducedMotion, isAttentive, isChatOpen]);
+
+  // Quem navega pelo Tab não pode ter o foco coberto pelo Orbi voando: ele para e espera.
+  useEffect(() => {
+    if (reducedMotion || isChatOpen) return;
+    function pauseForKeyboard(event: KeyboardEvent) {
+      if (event.key !== 'Tab') return;
+      setAction(null);
+      scheduleNext(KEYBOARD_PAUSE_MS);
+    }
+    document.addEventListener('keydown', pauseForKeyboard);
+    return () => document.removeEventListener('keydown', pauseForKeyboard);
+  }, [reducedMotion, isChatOpen]);
 
   // O painel continua montado enquanto esmaece ao fechar.
   if (isChatOpen && !isPanelMounted) setIsPanelMounted(true);

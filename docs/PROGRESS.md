@@ -247,7 +247,8 @@ Encontrado e corrigido:
   página, focável) recebe o foco ao trocar de rota (o Next já anuncia o título da página nova).
 - **Foco escondido (2.4.11):** `scroll-padding` no `html` para o foco não parar atrás do cabeçalho
   ou dos controles de baixo. Voltando com Shift+Tab para a órbita, a página rola até a parada
-  atual. O `<dialog>` modal prende o Tab dentro dele.
+  atual. O `<dialog>` modal prende o Tab dentro dele. O Orbi do canto para de brincar por 15 s quando a pessoa usa o Tab, para não voar por
+  cima do foco.
 - **Órbita pelo teclado:** setas, Home e End na trilha trocam de planeta; anúncio curto do planeta
   em destaque em vez da ficha inteira; "N projetos encontrados" nos filtros.
 - **Formulários:** campos marcados como "obrigatório" ou "obrigatório para publicar" (visível e
