@@ -5,6 +5,8 @@ import { FormProvider, type Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/Button';
+import { collectFormIssues, type FormIssue } from '@/components/ui/form-issues';
+import { FormIssueList } from '@/components/ui/FormIssueList';
 import { useToast } from '@/components/ui/ToastProvider';
 import { saveProject } from '@/features/projects/actions';
 import {
@@ -14,8 +16,6 @@ import {
 } from '@/features/projects/schema';
 
 import { FeaturesSection } from './FeaturesSection';
-import { collectFormIssues, type FormIssue } from './form-issues';
-import { FormIssueList } from './FormIssueList';
 import { ImagesSection } from './ImagesSection';
 import { InfoSection } from './InfoSection';
 import { PaletteSection } from './PaletteSection';
@@ -24,6 +24,13 @@ import { TeamSection } from './TeamSection';
 import { useUnsavedChanges } from './UnsavedChangesProvider';
 
 type SaveMode = 'draft' | 'publish';
+
+// Listas que pedem um mínimo de itens: o resumo de erros leva até a seção delas.
+const SECTION_IDS = {
+  features: 'features-section',
+  images: 'images-section',
+  developers: 'developers-section',
+} as const;
 
 const RESOLVERS: Record<SaveMode, Resolver<ProjectFormValues>> = {
   draft: zodResolver(projectDraftSchema),
@@ -73,7 +80,7 @@ export function ProjectEditor({ initialValues, projectId }: ProjectEditorProps) 
           showToast(failure.error, 'error');
         });
       },
-      (errors) => setIssues({ mode, items: collectFormIssues(errors) }),
+      (errors) => setIssues({ mode, items: collectFormIssues(errors, SECTION_IDS) }),
     )(event);
   }
 

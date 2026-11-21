@@ -1,4 +1,5 @@
 // Textos do chat com o Orbi. A equipe edita aqui, sem mexer nos componentes.
+import { REQUEST_PROJECT_PATH } from '@/lib/site';
 
 export type FaqAction = {
   label: string;
@@ -26,6 +27,20 @@ export const CONTACT_EMAIL_SUBJECT = 'Contato pelo site da Main';
 export const CONTACT_EMAIL_BODY = 'Olá, Main! Vim pelo site e gostaria de conversar sobre';
 
 export const FAQ: readonly FaqItem[] = [
+  {
+    id: 'request',
+    question: 'Quero um projeto',
+    answer: [
+      'Que ótimo! Conte o que você precisa no formulário de pedido e a gente entra em contato.',
+    ],
+    actions: [
+      {
+        label: 'Solicitar projeto',
+        href: REQUEST_PROJECT_PATH,
+        notice: 'Redirecionando para Solicitar projeto…',
+      },
+    ],
+  },
   {
     id: 'about',
     question: 'O que é a Main?',

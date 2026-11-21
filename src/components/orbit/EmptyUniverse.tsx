@@ -4,6 +4,7 @@ import { ButtonLink } from '@/components/ui/ButtonLink';
 import { EmptyOrbitIllustration } from '@/components/ui/EmptyOrbitIllustration';
 import { contactMailto } from '@/lib/contact';
 import { type CameraPose, overviewPose } from '@/lib/orbits';
+import { REQUEST_PROJECT_PATH } from '@/lib/site';
 
 import { EmptySystem } from './EmptySystem';
 import { SpaceBackdrop } from './SpaceBackdrop';
@@ -39,7 +40,10 @@ export function EmptyUniverse() {
           construirmos vai virar um planeta neste sistema.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <ButtonLink href={contactMailto()}>Fale com a Main</ButtonLink>
+          <ButtonLink href={REQUEST_PROJECT_PATH}>Solicitar projeto</ButtonLink>
+          <ButtonLink href={contactMailto()} variant="secondary">
+            Fale com a Main
+          </ButtonLink>
           <TeamShortcut />
         </div>
       </div>

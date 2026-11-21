@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { HEADER_LIST_CLASSES, type HeaderPlacement } from '@/components/ui/header-placement';
 import { MotionToggle } from '@/components/ui/MotionToggle';
+import { REQUEST_PROJECT_PATH } from '@/lib/site';
 import { cn } from '@/lib/utils/cn';
 
 type SiteHeaderItem =
@@ -14,6 +15,7 @@ const SITE_HEADER_ITEMS: readonly SiteHeaderItem[] = [
   { kind: 'link', href: '/#todos', label: 'Projetos' },
   { kind: 'link', href: '/#sobre', label: 'Sobre a Main' },
   { kind: 'link', href: '/#contato', label: 'Contato' },
+  { kind: 'link', href: REQUEST_PROJECT_PATH, label: 'Solicitar projeto' },
   { kind: 'motion' },
   { kind: 'team', href: '/dashboard', label: 'Área da equipe' },
 ];

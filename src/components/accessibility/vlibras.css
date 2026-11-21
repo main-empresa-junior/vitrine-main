@@ -13,7 +13,7 @@
 }
 
 /* Mesmo ponto de quebra de --breakpoint-nav: com o cabeçalho completo, fica abaixo dele à esquerda. */
-@media (min-width: 64rem) {
+@media (min-width: 80rem) {
   #vlibras-access-wrapper {
     transform: translateY(calc(6.5rem + 20px - 50vh));
   }

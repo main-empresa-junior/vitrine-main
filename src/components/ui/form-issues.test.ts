@@ -14,7 +14,8 @@ describe('collectFormIssues', () => {
       palette: { primary: { type: 'invalid', message: 'Use uma cor no formato #RRGGBB.' } },
     };
 
-    expect(collectFormIssues(errors)).toEqual([
+    const sections = { features: 'features-section', images: 'images-section' };
+    expect(collectFormIssues(errors, sections)).toEqual([
       { fieldId: 'client', message: 'Informe o cliente.' },
       { fieldId: 'features-section', message: 'Adicione pelo menos 3 funcionalidades.' },
       { fieldId: 'features-0-description', message: 'Descreva a funcionalidade.' },

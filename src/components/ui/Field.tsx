@@ -17,7 +17,7 @@ export type CharacterCount = { value: number; max: number };
 // "always": o formulário não envia sem o campo; "publish": só a publicação exige.
 export type FieldRequirement = 'always' | 'publish';
 
-const REQUIREMENT_LABELS: Record<FieldRequirement, string> = {
+export const REQUIREMENT_LABELS: Record<FieldRequirement, string> = {
   always: 'obrigatório',
   publish: 'obrigatório para publicar',
 };

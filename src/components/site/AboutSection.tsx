@@ -1,6 +1,8 @@
+import { ButtonLink } from '@/components/ui/ButtonLink';
 import { FadeIn } from '@/components/ui/FadeIn';
 import { Logo } from '@/components/ui/Logo';
 import { SectionTitle } from '@/components/ui/SectionTitle';
+import { REQUEST_PROJECT_PATH } from '@/lib/site';
 
 export function AboutSection() {
   return (
@@ -16,6 +18,9 @@ export function AboutSection() {
             <p className="mt-5 max-w-prose text-lead text-muted">
               [Texto sobre a Main: quem somos, o que fazemos e como trabalhamos.]
             </p>
+            <ButtonLink href={REQUEST_PROJECT_PATH} size="lg" className="mt-8">
+              Solicitar projeto
+            </ButtonLink>
           </div>
           <Logo variant="coursesOnDark" className="mx-auto h-auto w-full max-w-xs" />
         </div>

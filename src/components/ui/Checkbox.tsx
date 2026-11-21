@@ -1,10 +1,10 @@
-import type { InputHTMLAttributes, Ref } from 'react';
+import type { InputHTMLAttributes, ReactNode, Ref } from 'react';
 
 import { FieldError } from './FieldError';
 
 type CheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   id: string;
-  label: string;
+  label: ReactNode;
   error?: string;
   ref?: Ref<HTMLInputElement>;
 };

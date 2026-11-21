@@ -107,6 +107,51 @@ export type Database = {
           },
         ];
       };
+      project_requests: {
+        Row: {
+          client_name: string;
+          consent: boolean;
+          contact_preference: Database['public']['Enums']['contact_preference'];
+          created_at: string;
+          deadline: string | null;
+          description: string;
+          email: string;
+          id: string;
+          ip_hash: string | null;
+          phone: string | null;
+          platform: Database['public']['Enums']['request_platform'];
+          status: Database['public']['Enums']['request_status'];
+        };
+        Insert: {
+          client_name: string;
+          consent: boolean;
+          contact_preference: Database['public']['Enums']['contact_preference'];
+          created_at?: string;
+          deadline?: string | null;
+          description: string;
+          email: string;
+          id?: string;
+          ip_hash?: string | null;
+          phone?: string | null;
+          platform: Database['public']['Enums']['request_platform'];
+          status?: Database['public']['Enums']['request_status'];
+        };
+        Update: {
+          client_name?: string;
+          consent?: boolean;
+          contact_preference?: Database['public']['Enums']['contact_preference'];
+          created_at?: string;
+          deadline?: string | null;
+          description?: string;
+          email?: string;
+          id?: string;
+          ip_hash?: string | null;
+          phone?: string | null;
+          platform?: Database['public']['Enums']['request_platform'];
+          status?: Database['public']['Enums']['request_status'];
+        };
+        Relationships: [];
+      };
       projects: {
         Row: {
           client: string;
@@ -175,11 +220,27 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      submit_project_request: {
+        Args: {
+          p_client_name: string;
+          p_consent: boolean;
+          p_contact_preference: Database['public']['Enums']['contact_preference'];
+          p_deadline: string;
+          p_description: string;
+          p_email: string;
+          p_ip_hash: string;
+          p_phone: string;
+          p_platform: Database['public']['Enums']['request_platform'];
+        };
+        Returns: string;
+      };
     };
     Enums: {
+      contact_preference: 'email' | 'phone';
       planet_texture: 'gas' | 'rocky' | 'earth' | 'ice';
       project_type: 'app' | 'site' | 'system';
+      request_platform: 'web' | 'mobile' | 'web_and_mobile';
+      request_status: 'new' | 'contacted' | 'closed';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -301,8 +362,11 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      contact_preference: ['email', 'phone'],
       planet_texture: ['gas', 'rocky', 'earth', 'ice'],
       project_type: ['app', 'site', 'system'],
+      request_platform: ['web', 'mobile', 'web_and_mobile'],
+      request_status: ['new', 'contacted', 'closed'],
     },
   },
 } as const;
